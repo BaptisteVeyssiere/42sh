@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Tue Apr 12 00:32:26 2016 Baptiste veyssiere
-** Last update Tue Apr 12 23:42:56 2016 Baptiste veyssiere
+** Last update Mon May 23 23:27:22 2016 Baptiste veyssiere
 */
 
 #include <sys/wait.h>
@@ -32,7 +32,7 @@ int	close_fd(int index, int fd, int *fildes[2], int length)
   return (0);
 }
 
-int	pipe_fd(t_command *command, int **fildes, int i)
+int	pipe_fd(t_and_or *command, int **fildes, int i)
 {
   int	j;
   int	k;
@@ -60,7 +60,7 @@ int	pipe_fd(t_command *command, int **fildes, int i)
   return (0);
 }
 
-int	wait_loop(t_command *command, int i, int **fildes, int *pid)
+int	wait_loop(t_and_or *command, int i, int **fildes, int *pid)
 {
   int	status;
 
@@ -83,7 +83,7 @@ int	wait_loop(t_command *command, int i, int **fildes, int *pid)
   return (0);
 }
 
-int	execute_loop(t_command *command, char ***env, int **fildes, int *pid)
+int	execute_loop(t_and_or *command, char ***env, int **fildes, int *pid)
 {
   int	i;
 
@@ -112,11 +112,12 @@ int	execute_loop(t_command *command, char ***env, int **fildes, int *pid)
   return (0);
 }
 
-int	execute_interpipe(t_command *command, char ***env)
+int	execute_interpipe(t_and_or *command, char ***env, char *check_if_fail)
 {
   int   i;
   int   **fildes;
   int   *pid;
+  int	error;
 
   if (command == NULL || command->command[0] == NULL)
     return (0);
@@ -128,8 +129,12 @@ int	execute_interpipe(t_command *command, char ***env)
   while (++i < command->pipe_nbr)
     if ((fildes[i] = malloc(sizeof(int) * 2)) == NULL)
       return (-1);
-  if (execute_loop(command, env, fildes, pid) == -1)
-    return (-1);
+  if ((error = execute_loop(command, env, fildes, pid)))
+    {
+      *check_if_fail += 1;
+      if (error == -1)
+	return (-1);
+    }
   if (command->pipe_nbr)
     {
       i = -1;

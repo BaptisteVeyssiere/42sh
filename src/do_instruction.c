@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat Apr  9 18:20:17 2016 Baptiste veyssiere
-** Last update Tue Apr 12 00:44:12 2016 Baptiste veyssiere
+** Last update Mon May 23 23:22:59 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -51,7 +51,7 @@ int	exec_instruction(char builtin, char function,
   return (0);
 }
 
-int	do_instruction(t_command *command, char ***env, int i)
+int	do_instruction(t_and_or *command, char ***env, int i)
 {
   char	builtin;
   char	function;
@@ -78,14 +78,33 @@ int	do_instruction(t_command *command, char ***env, int i)
   return (0);
 }
 
-int	execute_tree(t_command **tree, char ***env)
+int	execute_tree(t_tree **tree, char ***env)
 {
   int	i;
+  int	j;
   int	error;
+  char	check_if_fail;
+  char	tmp;
 
   i = -1;
+  check_if_fail = 0;
+  tmp = 0;
   while (tree[++i] != NULL)
-    if ((error = execute_interpipe(tree[i], env)) != 0)
-      return (error);
+    {
+      j = -1;
+      while (tree[i]->and_or[++j])
+	if (j == 0 || (check_if_fail == 0 && tree[i]->and_or[j]->and == 1) ||
+	    (check_if_fail == 1 && tree[i]->and_or[j]->or == 1))
+	  {
+	    tmp = check_if_fail;
+	    if ((error = execute_interpipe(tree[i]->and_or[j], env, &check_if_fail)) != 0)
+	      return (error);
+	    if (tmp == 1 && check_if_fail == 1)
+	      check_if_fail = 0;
+	  }
+	else if (j != 0 && check_if_fail == 0 && tree[i]->and_or[j]->or == 1)
+	  while (tree[i]->and_or[j + 1])
+	    ++j;
+    }
   return (0);
 }

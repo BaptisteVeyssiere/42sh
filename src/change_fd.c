@@ -5,13 +5,13 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun Apr 10 00:00:48 2016 Baptiste veyssiere
-** Last update Tue Apr 12 16:18:37 2016 Baptiste veyssiere
+** Last update Mon May 23 21:26:39 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
 #include "mysh.h"
 
-int	change_fd_on(int *fd_input, int *fd_output, t_command *command, int i)
+int	change_fd_on(int *fd_input, int *fd_output, t_and_or *command, int i)
 {
   if (command->command[i]->fd_input != 0)
     {

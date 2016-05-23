@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Apr  6 23:16:46 2016 Baptiste veyssiere
-** Last update Mon Apr 11 03:24:07 2016 Baptiste veyssiere
+** Last update Mon May 23 20:33:01 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -63,31 +63,25 @@ int	sort_node(t_interpipe *command, char pipe, char prev)
   return (0);
 }
 
-int	sort_tree(t_command **tree, char **env)
+int	sort_tree(t_interpipe **command, char **env)
 {
   int	i;
-  int	j;
   char	pipe;
   char	prev;
 
   i = -1;
-  while (tree[++i] != NULL)
+  while (command[++i])
     {
-      j = -1;
-      while (tree[i]->command[++j] != NULL)
-	{
-	  pipe = 0;
-	  prev = 0;
-	  if (tree[i]->command[j + 1] != NULL)
-	    pipe = 1;
-	  if (j > 0)
-	    prev = 1;
-	  if (sort_node(tree[i]->command[j], pipe, prev) == -1)
-	    return (-1);
-	  if ((tree[i]->command[j]->args =
-	       check_instruction(tree[i]->command[j]->str, env)) == NULL)
-	    return (-1);
-	}
+      pipe = 0;
+      prev = 0;
+      if (command[i + 1])
+	pipe = 1;
+      if (i > 0)
+	prev = 1;
+      if (sort_node(command[i], pipe, prev) == -1)
+	return (-1);
+      if (!(command[i]->args = check_instruction(command[i]->str, env)))
+	return (-1);
     }
   return (0);
 }

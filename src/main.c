@@ -1,11 +1,11 @@
 /*
-** mysh.c for mysh in /home/VEYSSI_B/rendu/Programmation_Shell/PSU_2015_minishell2
+** main.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
 **
 ** Made by Baptiste veyssiere
 ** Login   <VEYSSI_B@epitech.net>
 **
-** Started on  Tue Mar 29 16:27:35 2016 Baptiste veyssiere
-** Last update Mon Apr 11 23:43:33 2016 Baptiste veyssiere
+** Started on  Mon May 23 18:38:40 2016 Baptiste veyssiere
+** Last update Mon May 23 18:44:42 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -25,7 +25,7 @@ int	mysh(char **envp)
     {
       if (instruction[0] != 0)
 	{
-	  if (get_full_tree(instruction, &env) == -1 ||
+	  if (get_tree(instruction, &env) == -1 ||
 	      free_prompt(prompt) ||
 	      (prompt = get_prompt()) == NULL)
 	    return (-1);

@@ -5,9 +5,10 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Apr  6 17:14:13 2016 Baptiste veyssiere
-** Last update Wed Apr  6 17:14:19 2016 Baptiste veyssiere
+** Last update Sat May 21 14:05:23 2016 Baptiste veyssiere
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -32,6 +33,8 @@ int	get_red_length(char *red, int i)
 
   j = -1;
   while (red[i + ++j] && red[i + j] != '|');
+  if ((i + j) > 0 && red[i + j - 1] == ' ')
+    --j;
   return (j);
 }
 
@@ -45,11 +48,13 @@ char	*get_red(char *red, int *i)
   j = -1;
   length = get_red_length(red, *i);
   --(*i);
-  if ((str = malloc(sizeof(char) * (length + 1))) == NULL)
+  if (!(str = malloc(length + 1)))
     return (NULL);
   str[length] = 0;
-  while (red[++(*i)] && red[*i] != '|')
-    str[++j] = red[*i];
+  while (++j < length)
+    str[j] = red[++(*i)];
+  if (red[*i] && red[*i] != '|')
+    while (red[++(*i)] && red[*i] != '|');
   return (str);
 }
 

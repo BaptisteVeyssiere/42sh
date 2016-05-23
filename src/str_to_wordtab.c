@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Tue Mar 29 17:41:31 2016 Baptiste veyssiere
-** Last update Sat Apr  9 23:53:42 2016 Baptiste veyssiere
+** Last update Mon May 23 18:34:52 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -38,7 +38,7 @@ char	*str_to_word(char *str, int i)
   while (str[++length + i] &&
 	 str[length + i] != ' ' && str[length + i] != '\t');
   ++length;
-  if ((tabi = malloc(sizeof(char) * (length + 1))) == NULL)
+  if ((tabi = malloc((length + 1))) == NULL)
     return (NULL);
   j = -1;
   while (++j <= length)

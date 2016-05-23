@@ -5,12 +5,12 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Tue Apr 12 16:09:54 2016 Baptiste veyssiere
-** Last update Tue Apr 12 16:11:40 2016 Baptiste veyssiere
+** Last update Mon May 23 21:29:24 2016 Baptiste veyssiere
 */
 
 #include "mysh.h"
 
-int	is_builtin(t_command *command, int i, int mode)
+int	is_builtin(t_and_or *command, int i, int mode)
 {
   if (mode == 0)
     {

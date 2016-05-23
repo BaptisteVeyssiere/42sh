@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Fri Apr  1 01:41:26 2016 Baptiste veyssiere
-** Last update Sat Apr  9 23:54:11 2016 Baptiste veyssiere
+** Last update Mon May 23 20:26:23 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -46,7 +46,10 @@ char	*add_path(char **tab, char **command)
       if ((copy = test_path(command[0], tab[i])) == NULL)
 	return (NULL);
       if (access(copy, F_OK) == 0)
-	return (copy);
+	{
+	  free(command[0]);
+	  return (copy);
+	}
     }
   return (command[0]);
 }

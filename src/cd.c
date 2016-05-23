@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Mar 30 16:41:56 2016 Baptiste veyssiere
-** Last update Mon Apr 11 23:40:23 2016 Baptiste veyssiere
+** Last update Mon May 23 23:02:35 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -58,6 +58,8 @@ char		**cd_prev(char **env, char **oldpwd)
   char		*buf;
 
   buf = NULL;
+  if (*oldpwd == NULL)
+    return (env);
   if ((pwd = getcwd(buf, 100)) == NULL)
     return (NULL);
   if (chdir(*oldpwd) == -1)
