@@ -1,0 +1,25 @@
+Check des erreurs:
+1: Invalid null command, Missing name for redirect, Ambiguous input/output redirect
+
+
+|| && | :
+- 2 de ces caracteres a coté = Invalid null command
+- Au début ou a la fin d'une commande = Invalid null command (sauf le && apres un ;)
+
+>> > << < :
+- 2 de ces caracteres a coté = Missing name for redirect
+- au début d'une commande = Invalid null command
+- a la fin d'une commande = Missing name for redirect
+
+|| && puis >> > << < = Invalid null command
+
+>> > << < puis || && = Missing name for redirect
+
+| puis < << = Ambiguous input redirect
+
+>> > puis | = Missing name for redirect
+
+>> > file | = Ambiguous output redirect
+
+Si deux redirections a la suite au debut d'une commande:
+Missing name for redirection prend le pas sur Invalid null command
