@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Mon May 23 21:35:07 2016 Baptiste veyssiere
+## Last update Mon May 30 01:47:57 2016 Baptiste veyssiere
 ##
 
 NAME	= 42sh
@@ -17,41 +17,38 @@ CC	= gcc
 MKDIR	= mkdir -p
 
 SRC	= src/main.c \
-	src/tools.c \
 	src/get_tree.c \
-	src/get_command_tab.c \
-	src/epure_str.c \
-	src/get_and_or_tree.c \
-	src/get_and_or_tree_bis.c \
-	src/get_pipe_nbr.c \
-	src/get_interpipe_tab.c \
-	src/get_red_tab.c \
-	src/sort_tree.c \
-	src/check_instruction.c \
-	src/get_redirection_nbr.c \
-	src/get_fd.c \
-	src/str_to_wordtab.c \
-	src/check_if_exist.c \
-	src/get_fd_bis.c \
-	src/slash_test.c \
-	src/get_varenv.c \
-	src/get_varpath.c \
+	src/error.c \
+	src/tools.c \
 	src/free_tools.c \
+	src/epure_str.c \
+	src/execute_command.c \
+	src/get_and_or_tree.c \
+	src/get_interpipe_tree.c \
+	src/get_command_tree.c \
+	src/get_and_or_tree_add.c \
+	src/str_to_wordtab.c \
+	src/fill_leaf.c \
+	src/get_redirect_files.c \
 	src/prompt.c \
-	src/get_next_line.c \
 	src/env_copy.c \
-	src/tools_bis.c \
-	src/do_instruction.c \
+	src/get_next_line.c \
+	src/check_and_add_path.c \
+	src/slash_test.c \
+	src/get_varpath.c \
+	src/get_varenv.c \
+	src/open_fd.c \
 	src/execute_interpipe.c \
-	src/builtins.c \
+	src/do_instruction.c \
 	src/double_left_red.c \
-	src/change_fd.c \
-	src/is_builtin.c \
-	src/env.c \
+	src/builtins.c \
 	src/setenv.c \
 	src/unsetenv.c \
+	src/env.c \
+	src/echo.c \
+	src/exit.c \
 	src/cd.c \
-	src/exit.c
+	src/tools_bis.c
 
 SRCDIR	= src
 

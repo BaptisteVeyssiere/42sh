@@ -5,24 +5,25 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon Jan 11 16:30:41 2016 Baptiste veyssiere
-** Last update Sun Apr 10 02:40:08 2016 Baptiste veyssiere
+** Last update Sat May 28 19:26:34 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
 #include <stdlib.h>
+#include "mysh.h"
 #include "get_next_line.h"
 
-void	read_loop_bis(int *j, int *end, char *reader)
+static void	read_loop_bis(int *j, int *end, char *reader)
 {
   while (++(*j) < READ_SIZE && *end == 0 && reader[*j] != 0)
     if (reader[*j] == '\n')
       *end = 1;
 }
 
-char	*my_realloc(char *ptr, int size)
+static char	*my_realloc(char *ptr, int size)
 {
-  char  *tmp;
-  int   i;
+  char		*tmp;
+  int		i;
 
   tmp = NULL;
   i = -1;
@@ -41,10 +42,11 @@ char	*my_realloc(char *ptr, int size)
   return (ptr);
 }
 
-char	*init(char *buffer, char *line, int *static_counter, int *line_index)
+static char	*init(char *buffer, char *line,
+		      int *static_counter, int *line_index)
 {
-  int   i;
-  int	j;
+  int		i;
+  int		j;
 
   if (buffer[0] == 0)
     i = READ_SIZE;
@@ -70,12 +72,12 @@ char	*init(char *buffer, char *line, int *static_counter, int *line_index)
   return (line);
 }
 
-char	*read_loop(char *line, int fd, int line_index, char *buffer)
+static char	*read_loop(char *line, int fd, int line_index, char *buffer)
 {
-  int	end;
-  int	i;
-  int	j;
-  char	reader[READ_SIZE + 1];
+  int		end;
+  int		i;
+  int		j;
+  char		reader[READ_SIZE + 1];
 
   end = 0;
   while ((j = -1) == -1 && end == 0)
@@ -84,7 +86,7 @@ char	*read_loop(char *line, int fd, int line_index, char *buffer)
 	reader[j] = 0;
       end = (read(fd, reader, READ_SIZE) < READ_SIZE) ? (1) : (0);
       if ((i = -1) == -1 && end == 1 && reader[0] == 0 && line[0] == 0)
-        return (NULL);
+        return (free_line(line, NULL));
       while (++i < READ_SIZE && reader[i] != '\n' && reader[i] != 0)
 	line[++line_index] = reader[i];
       if ((j = -1) == -1 && end == 0 && reader[i] == 0)

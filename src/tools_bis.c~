@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 01:33:29 2016 Baptiste veyssiere
-** Last update Mon May 30 16:56:40 2016 Baptiste veyssiere
+** Last update Mon May 30 01:51:28 2016 Baptiste veyssiere
 */
 
 int	my_tablen(char **tab)
@@ -22,7 +22,7 @@ int	my_tablen(char **tab)
   return (nbr);
 }
 
-int	my_getnbr(char *str)
+int     my_getnbr(char *str)
 {
   int   i;
   int   j;

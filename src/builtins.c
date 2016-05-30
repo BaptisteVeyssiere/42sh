@@ -1,40 +1,62 @@
 /*
-** builtins.c for mysh in /home/VEYSSI_B/rendu/Programmation_Shell/PSU_2015_minishell2/test
+** builtins.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
 **
 ** Made by Baptiste veyssiere
 ** Login   <VEYSSI_B@epitech.net>
 **
-** Started on  Sat Apr  9 19:13:04 2016 Baptiste veyssiere
-** Last update Mon Apr 11 20:04:25 2016 Baptiste veyssiere
+** Started on  Sun May 29 02:01:39 2016 Baptiste veyssiere
+** Last update Mon May 30 00:24:16 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
 #include "mysh.h"
 
-char	**builtins(char **command, char **env, char *check)
+int	is_builtin(t_interpipe *command, int mode)
 {
-  char	env_key;
-  int	key;
-
-  key = 0;
-  env_key = 0;
-  if (env == NULL)
-    env_key = 1;
-  if (env_builtin(env, command[0]) != 0)
-    *check = 1;
-  else if (command[0] != NULL)
+  if (mode == 0)
     {
-      if ((env = setenv_builtin(env, command, &key)) == NULL && env_key == 0)
-	return (NULL);
-      else if ((env = unsetenv_builtin(env, command, &key)) == NULL
-	       && env_key == 0)
-	return (NULL);
-      else if (exit_builtin(command, env) != 0)
-	*check = 1;
-      else if ((env = cd_builtin(env, command, &key)) == NULL && env_key == 0)
-	return (NULL);
+      if (my_strcmp_strict(command->args[0], "cd") ||
+          my_strcmp_strict(command->args[0], "exit") ||
+          my_strcmp_strict(command->args[0], "setenv") ||
+          my_strcmp_strict(command->args[0], "unsetenv"))
+        return (1);
     }
-  if (key == 1)
-    *check = 1;
-  return (env);
+  else if (mode == 1)
+    {
+      if (!my_strcmp_strict(command->args[0], "cd") &&
+          !my_strcmp_strict(command->args[0], "exit") &&
+          !my_strcmp_strict(command->args[0], "setenv") &&
+          !my_strcmp_strict(command->args[0], "unsetenv"))
+        return (1);
+    }
+  return (0);
+}
+
+int	exec_builtins(char **args, char ***env)
+{
+  int	(*ptr[7])(char***, char**) =
+    {
+      cd_builtin,
+      env_builtin,
+      setenv_builtin,
+      unsetenv_builtin,
+      exit_builtin,
+      echo_builtin,
+      NULL
+    };
+  char	*name[7];
+  int	i;
+
+  name[0] = "cd";
+  name[1] = "env";
+  name[2] = "setenv";
+  name[3] = "unsetenv";
+  name[4] = "exit";
+  name[5] = "echo";
+  i = -1;
+  while (++i < 6 && !my_strcmp_strict(name[i], args[0]));
+  if (i == 6)
+    return (1);
+  else
+    return (ptr[i](env, args));
 }

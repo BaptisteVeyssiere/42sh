@@ -4,38 +4,53 @@
 ** Made by Baptiste veyssiere
 ** Login   <VEYSSI_B@epitech.net>
 **
-** Started on  Wed May 18 22:07:31 2016 Baptiste veyssiere
-** Last update Mon May 23 20:49:29 2016 Baptiste veyssiere
+** Started on  Wed May 25 17:25:32 2016 Baptiste veyssiere
+** Last update Sat May 28 22:37:45 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
 #include <unistd.h>
 
-int	my_strlen(char *s)
+int	my_strlen(char *str)
+{
+  int	i;
+
+  if (!str)
+    return (0);
+  i = -1;
+  while (str[++i]);
+  return (i);
+}
+
+void	my_strcpy(char *origin, char *copy)
 {
   int	i;
 
   i = -1;
-  if (!s)
-    return (0);
-  while (s[++i]);
-  return (i);
+  while (origin[++i])
+    copy[i] = origin[i];
+  copy[i] = 0;
 }
 
-int	my_perror(char *str)
-{
-  write(2, str, my_strlen(str));
-  return (-1);
-}
-
-void	my_strcpy(char *s1, char *s2)
+int	my_strcmp_strict(char *s1, char *s2)
 {
   int   i;
 
   i = -1;
   while (s1[++i])
-    s2[i] = s1[i];
-  s2[i] = 0;
+    if (s1[i] != s2[i])
+      return (0);
+  if (s2[i])
+    return (0);
+  return (1);
+}
+
+char	*free_line(char *line, char *ret)
+{
+  free(line);
+  if (ret == NULL)
+    return (NULL);
+  return (ret);
 }
 
 int	my_strcmp(char *s1, char *s2)
@@ -46,7 +61,7 @@ int	my_strcmp(char *s1, char *s2)
   while (s1[++i])
     {
       if (s1[i] != s2[i])
-        return (0);
+	return (0);
     }
   return (1);
 }

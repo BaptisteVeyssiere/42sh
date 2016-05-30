@@ -1,0 +1,25 @@
+1 ;
+2 && ||
+3 |
+4 > >> < <<
+
+il faut une variable pour vérifier le retour de la dernière instruction
+
+|| si la variable indique que l'instruction précédemment éxécutée à retourné 0, alors on s'arrete, sinon on exécute l'instruction
+A noter: si il y a une autre instruction apres (;), alors on 'éxécute l'instruction suivante, on ne s'arrête pas completement hein!
+
+&& si la variable indique que l'instruction précédemment éxécutée à retourné 0,	alors on éxécute l'instruction,	sinon on passe
+
+A noter: si une instruction est passée alors ne modifie pas la variable de retour
+
+Programme:
+-verifier les redirection en remplissant la structure
+-ajouter les path aux fonctions que l'on reconnait
+
+Pendant l'execution (donc certains peuvent ne pas apparaitre suivant les || et les &&)
+4: No such file or directory
+5: Command not found
+Programme:
+-on remplit la structure en ouvrant les files descriptors (potentielles erreurs 4)
+-On verifie que la commande existe (potentielles erreurs 5)
+-On execute en faissant attention aux signaux d'erreurs

@@ -1,76 +1,72 @@
 /*
-** str_to_wordtab.c for mysh in /home/VEYSSI_B/rendu/Programmation_Shell/PSU_2015_minishell2
+** str_to_wordtab.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
 **
 ** Made by Baptiste veyssiere
 ** Login   <VEYSSI_B@epitech.net>
 **
-** Started on  Tue Mar 29 17:41:31 2016 Baptiste veyssiere
-** Last update Mon May 23 18:34:52 2016 Baptiste veyssiere
+** Started on  Fri May 27 15:36:42 2016 Baptiste veyssiere
+** Last update Fri May 27 23:44:33 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
 #include <unistd.h>
-#include "mysh.h"
 
-int	get_word_nbr(char *str)
+static int	get_word_length(char *str, int pos)
 {
-  int	i;
-  int	nbr;
+  int		length;
+
+  length = 0;
+  while (str[++pos] && str[pos] != ' ' && str[pos] != '\t')
+    ++length;
+  return (length);
+}
+
+static int	get_word_nbr(char *str)
+{
+  int		nbr;
+  int		i;
 
   i = -1;
   nbr = 0;
   while (str[++i])
-    {
-      if ((i == 0 || str[i - 1] == ' ' || str[i - 1] == '\t') &&
-	  (str[i] != ' ' && str[i] != '\t'))
-	++nbr;
-    }
+    if (i == 0 || ((str[i] == ' ' || str[i] == '\t') &&
+		   (str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t')))
+      ++nbr;
   return (nbr);
 }
 
-char	*str_to_word(char *str, int i)
+static char	*get_word_from_str(char *str, int *pos)
 {
-  int	length;
-  int	j;
-  char	*tabi;
+  int		i;
+  int		length;
+  char		*tabi;
 
-  length = -1;
-  while (str[++length + i] &&
-	 str[length + i] != ' ' && str[length + i] != '\t');
-  ++length;
-  if ((tabi = malloc((length + 1))) == NULL)
+  i = -1;
+  length = get_word_length(str, *pos);
+  if (!(tabi = malloc(length + 1)))
     return (NULL);
-  j = -1;
-  while (++j <= length)
-    tabi[j] = 0;
-  j = -1;
-  while (str[i] && str[i] != ' ' && str[i] != '\t')
-    {
-      tabi[++j] = str[i];
-      ++i;
-    }
+  tabi[length] = 0;
+  while (++i < length)
+    tabi[i] = str[++(*pos)];
+  ++(*pos);
   return (tabi);
 }
 
 char	**str_to_wordtab(char *str)
 {
   char	**tab;
-  int	word_nbr;
   int	i;
-  int	j;
+  int	pos;
+  int	word_nbr;
 
   word_nbr = get_word_nbr(str);
-  if ((tab = malloc(sizeof(char*) * (word_nbr + 1))) == NULL)
+  if (!(tab = malloc(sizeof(char*) * (word_nbr + 1))))
     return (NULL);
   tab[word_nbr] = NULL;
   i = -1;
-  j = -1;
-  while (str[++i])
-    {
-      if ((i == 0 || str[i - 1] == ' ' || str[i - 1] == '\t') &&
-          (str[i] != ' ' && str[i] != '\t'))
-	if ((tab[++j] = str_to_word(str, i)) == NULL)
-	  return (NULL);
-    }
+  pos = -1;
+  while (++i < word_nbr)
+    if (!(tab[i] = get_word_from_str(str, &pos)))
+      return (NULL);
   return (tab);
 }

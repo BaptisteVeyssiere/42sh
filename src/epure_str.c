@@ -4,67 +4,58 @@
 ** Made by Baptiste veyssiere
 ** Login   <VEYSSI_B@epitech.net>
 **
-** Started on  Wed May 18 22:08:49 2016 Baptiste veyssiere
-** Last update Sat May 21 09:56:03 2016 Baptiste veyssiere
+** Started on  Wed May 25 17:52:01 2016 Baptiste veyssiere
+** Last update Sat May 28 19:20:42 2016 Baptiste veyssiere
 */
 
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include "mysh.h"
 
-static int	get_new_length(char *str)
+static int	get_epure_length(char *str)
 {
-  int		i;
   int		length;
+  int		i;
 
-  i = -1;
   length = 0;
+  i = -1;
   while (str[++i] && (str[i] == ' ' || str[i] == '\t'));
+  if (!str[i])
+    return (0);
   --i;
   while (str[++i])
     if ((str[i] != ' ' && str[i] != '\t') ||
 	((str[i] == ' ' || str[i] == '\t') &&
-	 (str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t')))
+	 str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t'))
       ++length;
   return (length);
 }
 
-char	*epure_str(char *old)
+char	*epure_str(char *str)
 {
-  int	new_length;
-  char	*new;
+  int	epure_length;
+  char	*epure;
   int	i;
   int	j;
 
-  new_length = get_new_length(old);
-  if (!(new = malloc(new_length + 1)))
+  epure = NULL;
+  epure_length = get_epure_length(str);
+  if (!(epure = malloc(epure_length + 1)))
     return (NULL);
   i = -1;
-  while (++i <= new_length)
-    new[i] = 0;
+  while (++i <= epure_length)
+    epure[i] = 0;
   i = -1;
   j = -1;
-  while (old[++i] && (old[i] == ' ' || old[i] == '\t'));
+  while (str[++i] && (str[i] == ' ' || str[i] == '\t'));
+  if (!str[i])
+    return (free_line(str, epure));
   --i;
-  while (old[++i])
-    if ((old[i] != ' '&& old[i] != '\t') ||
-        ((old[i] == ' ' || old[i] == '\t') &&
-         (old[i + 1] && old[i + 1] != ' ' && old[i + 1] != '\t')))
-      new[++j] = old[i];
-  free(old);
-  return (new);
-}
-
-int	get_epure_str_length(char *str)
-{
-  int   i;
-  int   length;
-
-  i = -1;
-  while (str[++i] && (str[i] == '\t' || str[i] == ' '));
-  if (str[i] == 0)
-    return (0);
-  length = 0;
   while (str[++i])
-    ++length;
-  return (length);
+    if ((str[i] != ' ' && str[i] != '\t') ||
+        ((str[i] == ' ' || str[i] == '\t') &&
+         str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t'))
+      epure[++j] = str[i];
+  free(str);
+  return (epure);
 }

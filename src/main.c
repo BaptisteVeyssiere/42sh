@@ -4,43 +4,43 @@
 ** Made by Baptiste veyssiere
 ** Login   <VEYSSI_B@epitech.net>
 **
-** Started on  Mon May 23 18:38:40 2016 Baptiste veyssiere
-** Last update Mon May 23 18:44:42 2016 Baptiste veyssiere
+** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
+** Last update Sat May 28 19:56:15 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
 #include "mysh.h"
+#include "get_next_line.h"
 
-int	mysh(char **envp)
+static int	my_shell(char **env_tmp)
 {
-  char  *instruction;
-  char	**prompt;
-  char	**env;
+  char		*command;
+  char		**prompt;
+  char		**env;
 
   if ((prompt = get_prompt()) == NULL ||
-      ((env = env_copy(envp)) == NULL && envp[0] != NULL))
+      ((env = env_copy(env_tmp)) == NULL && env_tmp[0] != NULL))
     return (-1);
   aff_prompt(prompt);
-  while ((instruction = get_next_line(0)) != NULL)
+  while ((command = get_next_line(0)))
     {
-      if (instruction[0] != 0)
-	{
-	  if (get_tree(instruction, &env) == -1 ||
-	      free_prompt(prompt) ||
-	      (prompt = get_prompt()) == NULL)
-	    return (-1);
-	  aff_prompt(prompt);
-	}
-      else
-	aff_prompt(prompt);
-      free(instruction);
+      if (execute_command(command, &env) == -1)
+	return (-1);
+      free_prompt(prompt);
+      if (!(prompt = get_prompt()))
+	return (-1);
+      aff_prompt(prompt);
     }
   free_prompt(prompt);
   free_env(env);
   return (0);
 }
 
-int	main(UNUSED int ac, UNUSED char **av, char **env)
+int		main(int ac, UNUSED char **av, char **env)
 {
-  return (mysh(env));
+  if (ac != 1)
+    return (EXIT_SUCCESS);
+  if (my_shell(env) == -1)
+    return (EXIT_FAILURE);
+  return (EXIT_SUCCESS);
 }

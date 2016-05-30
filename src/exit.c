@@ -5,16 +5,16 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Mar 30 16:35:16 2016 Baptiste veyssiere
-** Last update Mon Apr 11 20:28:57 2016 Baptiste veyssiere
+** Last update Mon May 30 01:36:11 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
 
-int	check_formation(char *str)
+static int	check_formation(char *str)
 {
-  int	i;
+  int		i;
 
   i = -1;
   while (str[++i])
@@ -28,30 +28,20 @@ int	check_formation(char *str)
   return (0);
 }
 
-int	error_exit(char **command)
+static int	error_exit(char **command)
 {
   if (check_formation(command[1]) == -1)
-    {
-      my_perror("exit: Badly formed number.\n");
-      return (1);
-    }
+    return (my_int_perror("exit: Badly formed number.\n", 1));
   if (my_tablen(command) != 2)
-    {
-      my_perror("exit: Expression Syntax.\n");
-      return (1);
-    }
+    return (my_int_perror("exit: Expression Syntax.\n", 1));
   return (0);
 }
 
-int	exit_builtin(char **command, char **env)
+int	exit_builtin(char ***env, char **command)
 {
-  char	*temp;
   int	nbr;
 
-  temp = "exit";
-  if (my_strcmp_strict(temp, command[0]) == 0)
-    return (0);
-  if (command[1] == NULL)
+  if (!command[1])
     nbr = 0;
   else
     {
@@ -59,10 +49,11 @@ int	exit_builtin(char **command, char **env)
 	return (1);
       nbr = my_getnbr(command[1]);
     }
-  if (env != NULL)
-    free_env(env);
-  free_wordtab(command);
-  write(1, "exit\n", 5);
+  if (*env)
+    free_env(*env);
+  free_tab(command);
+  if (write(1, "exit\n", 5) == -1)
+    return (1);
   exit(nbr);
-  return (1);
+  return (0);
 }

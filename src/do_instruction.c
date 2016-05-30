@@ -1,110 +1,70 @@
 /*
-** do_instruction.c for mysh in /home/VEYSSI_B/rendu/Programmation_Shell/PSU_2015_minishell2/test
+** do_instruction.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
 **
 ** Made by Baptiste veyssiere
 ** Login   <VEYSSI_B@epitech.net>
 **
-** Started on  Sat Apr  9 18:20:17 2016 Baptiste veyssiere
-** Last update Mon May 23 23:22:59 2016 Baptiste veyssiere
+** Started on  Sun May 29 01:43:17 2016 Baptiste veyssiere
+** Last update Mon May 30 00:24:32 2016 Baptiste veyssiere
 */
 
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 #include "mysh.h"
 
-int	exec_builtins(char **args, char ***env)
+static int	change_fd_on(int *fd_input, int *fd_output,
+			     t_command *command, int i)
 {
-  char	check;
-  char	key;
-
-  key = 0;
-  if (*env == NULL)
-    key = 1;
-  check = 0;
-  if ((*env = builtins(args, *env, &check)) == NULL && key == 0)
-    return (-1);
-  if (check == 1)
-    return (0);
-  return (0);
-}
-
-int	exec_instruction(char builtin, char function,
-			 t_interpipe *command, char ***env)
-{
-  if (builtin == 0 && function == 0)
+  if (command->command[i]->fd_input != 0)
     {
-      my_perror_function(command->args[0]);
-      exit(1);
-    }
-  else if (builtin)
-    {
-      exec_builtins(command->args, env);
-      exit (0);
-    }
-  else if (function)
-    {
-      if (execve(command->args[0],
-                 command->args, *env) == -1)
+      if ((*fd_input = dup(0)) == -1 || close(0) == -1 ||
+          dup(command->command[i]->fd_input) == -1)
         return (-1);
     }
+  if (command->command[i]->fd_output != 1)
+    {
+      if ((*fd_output = dup(1)) == -1 ||
+          close(1) == -1 ||
+          dup(command->command[i]->fd_output)  == -1)
+        return (-1);
+    }
+  if (*fd_input == -1 || *fd_output == -1)
+    return (-1);
   return (0);
 }
 
-int	do_instruction(t_and_or *command, char ***env, int i)
+static int	exec_instruction(char if_builtin,
+				 t_interpipe *command, char ***env)
 {
-  char	builtin;
-  char	function;
-  int	fd_input;
-  int	fd_output;
+  if (if_builtin)
+    {
+      if (exec_builtins(command->args, env))
+	return (EXIT_FAILURE);
+      exit (EXIT_SUCCESS);
+    }
+  else if (execve(command->args[0],
+		  command->args, *env) == -1)
+    return (EXIT_FAILURE);
+  return (EXIT_SUCCESS);
+}
 
-  if (command->command[i] == NULL)
-    return (0);
+int	do_instruction(t_command *and_or, char ***env, int i)
+{
+  char  builtin;
+  int   fd_input;
+  int   fd_output;
+
   fd_input = -2;
   fd_output = -2;
-  if (command->command[i]->if_double_left)
-    if (double_left_red(command->command[i]) == -1)
+  if (and_or->command[i]->if_double_left)
+    if (double_left_red(and_or->command[i]) == -1)
       return (-1);
-  if (change_fd_on(&fd_input, &fd_output, command, i) == -1)
+  if (change_fd_on(&fd_input, &fd_output, and_or, i) == -1)
     return (-1);
-  function = 1;
   builtin = 0;
-  builtin = check_if_builtins(command->command[i]->args[0]);
-  if (slash_test(command->command[i]->args[0]) == 0
-      || access(command->command[i]->args[0], F_OK) != 0)
-    function = 0;
-  if (exec_instruction(builtin, function, command->command[i], env) == -1)
-    return (-1);
-  return (0);
-}
-
-int	execute_tree(t_tree **tree, char ***env)
-{
-  int	i;
-  int	j;
-  int	error;
-  char	check_if_fail;
-  char	tmp;
-
-  i = -1;
-  check_if_fail = 0;
-  tmp = 0;
-  while (tree[++i] != NULL)
-    {
-      j = -1;
-      while (tree[i]->and_or[++j])
-	if (j == 0 || (check_if_fail == 0 && tree[i]->and_or[j]->and == 1) ||
-	    (check_if_fail == 1 && tree[i]->and_or[j]->or == 1))
-	  {
-	    tmp = check_if_fail;
-	    if ((error = execute_interpipe(tree[i]->and_or[j], env, &check_if_fail)) != 0)
-	      return (error);
-	    if (tmp == 1 && check_if_fail == 1)
-	      check_if_fail = 0;
-	  }
-	else if (j != 0 && check_if_fail == 0 && tree[i]->and_or[j]->or == 1)
-	  while (tree[i]->and_or[j + 1])
-	    ++j;
-    }
-  return (0);
+  if (my_strcmp_strict(and_or->command[i]->args[0], "env") ||
+      my_strcmp_strict(and_or->command[i]->args[0], "echo"))
+    builtin = 1;
+  return (exec_instruction(builtin, and_or->command[i], env));
 }

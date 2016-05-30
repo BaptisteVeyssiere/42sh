@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Tue Jan  5 18:07:00 2016 Baptiste veyssiere
-** Last update Tue Mar 29 16:30:00 2016 Baptiste veyssiere
+** Last update Sat May 28 19:05:24 2016 Baptiste veyssiere
 */
 
 #ifndef GET_NEXT_LINE_H_
@@ -16,9 +16,5 @@
 # endif /* !READ_SIZE */
 
 char	*get_next_line(const int);
-char    *my_realloc(char*, int);
-int     my_strlen(char*);
-char    *read_loop(char*, int, int, char*);
-char    *init(char*, char*, int*, int*);
 
 #endif /* !GET_NEXT_LINE */

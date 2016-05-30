@@ -5,19 +5,18 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Tue Mar 29 19:14:47 2016 Baptiste veyssiere
-** Last update Mon Apr 11 23:43:15 2016 Baptiste veyssiere
+** Last update Sat May 28 18:57:45 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
 
-int	free_prompt(char **prompt)
+void	free_prompt(char **prompt)
 {
   if (my_strcmp_strict(prompt[0], "pwd") == 0)
     free(prompt[0]);
   free(prompt);
-  return (0);
 }
 
 char	**get_prompt()

@@ -5,17 +5,17 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Tue Mar 29 17:41:31 2016 Baptiste veyssiere
-** Last update Fri Apr  1 02:15:16 2016 Baptiste veyssiere
+** Last update Sat May 28 22:35:16 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
 
-int	get_word_nbr_path(char *str)
+static int	get_word_nbr_path(char *str)
 {
-  int	i;
-  int	nbr;
+  int		i;
+  int		nbr;
 
   i = -1;
   nbr = 0;
@@ -27,11 +27,11 @@ int	get_word_nbr_path(char *str)
   return (nbr);
 }
 
-char	*str_to_word_path(char *str, int i)
+static char	*str_to_word_path(char *str, int i)
 {
-  int	length;
-  int	j;
-  char	*tabi;
+  int		length;
+  int		j;
+  char		*tabi;
 
   length = -1;
   while (str[++length + i] && str[length + i] != ':');

@@ -1,0 +1,6 @@
+1:
+faire le builtin echo (correctement)
+2:
+Verifier le retour du fork et le status pour le check d'erreur
+2.5:
+Et du coup changer la variable ret en cas d'erreur
