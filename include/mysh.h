@@ -5,13 +5,17 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Mon May 30 01:46:56 2016 Baptiste veyssiere
+** Last update Mon May 30 18:03:29 2016 Baptiste veyssiere
 */
 
 #ifndef MYSH_H_
 # define MYSH_H_
 
 # define UNUSED __attribute__((unused))
+
+# ifndef WCOREDUMP
+#  define WCOREDUMP(status) ((status) & 0x80)
+# endif /* !WCOREDUMP */
 
 typedef struct	s_interpipe
 {
