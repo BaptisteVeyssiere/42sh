@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 21:38:00 2016 Baptiste veyssiere
-** Last update Tue May 31 18:05:34 2016 Baptiste veyssiere
+** Last update Tue May 31 22:13:33 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -86,8 +86,6 @@ static int	add_path(char **command, char **env)
       path[my_strlen("/bin")] = 0;
       my_strcpy("/bin", path);
     }
-  /* else if ((path = get_varenv(env, "PATH")) == NULL) */
-  /*   return (1); */
   if ((tab = get_varpath(path)) == NULL)
     return (-1);
   ret = test_path(tab, command);
