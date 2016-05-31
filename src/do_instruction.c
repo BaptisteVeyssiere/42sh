@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:43:17 2016 Baptiste veyssiere
-** Last update Tue May 31 21:35:51 2016 Baptiste veyssiere
+** Last update Tue May 31 23:09:21 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -37,10 +37,12 @@ static int	change_fd_on(int *fd_input, int *fd_output,
 static int	exec_instruction(char if_builtin,
 				 t_interpipe *command, char ***env)
 {
+  int		ret;
+
   if (if_builtin)
     {
-      if (exec_builtins(command->args, env))
-	return (EXIT_FAILURE);
+      if ((ret = exec_builtins(command->args, env)))
+	return (ret);
       exit (EXIT_SUCCESS);
     }
   else if (execve(command->args[0],

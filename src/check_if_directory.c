@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 23:49:50 2016 Baptiste veyssiere
-** Last update Tue May 31 21:22:37 2016 Baptiste veyssiere
+** Last update Tue May 31 22:56:53 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -54,6 +54,32 @@ int		check_if_exist(char *command)
       if (write(2, command, my_strlen(command)) == -1)
         return (-1);
       return (my_int_perror(": Not a directory.\n", 1));
+    }
+  return (0);
+}
+
+int	check_exit(t_tree **tree)
+{
+  int	i;
+  int	j;
+  int	k;
+
+  i = -1;
+  while (tree[++i])
+    {
+      j = -1;
+      while (tree[i]->and_or[++j])
+	{
+	  k = -1;
+	  while (tree[i]->and_or[j]->command[++k]);
+	  --k;
+	  if (my_strcmp_strict(tree[i]->and_or[j]->command[k]->args[0], "exit"))
+	    {
+	      if (write(1, "exit\n", 5) == -1)
+		return (1);
+	      return (1);
+	    }
+	}
     }
   return (0);
 }

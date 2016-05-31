@@ -1,6 +1,2 @@
 1:
-messages d'erreurs pour le cd
-2:
-exit 0 && ls / exit 1 && ls (c'est parce que exit 0 renvoie 0 donc commande marche (et du coup y a le || aussi))
-3:
-changer la methode de recuperation des redirect files
+myls de MERDE qui veut PAS marCHER

@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Tue May 31 22:14:08 2016 Baptiste veyssiere
+** Last update Tue May 31 19:44:05 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -43,4 +43,7 @@ int		main(int ac, UNUSED char **av, char **env)
   if (ac != 1)
     return (EXIT_SUCCESS);
   return (my_shell(env));
+  /* if ((ret = my_shell(env) == -1) */
+  /*   return (EXIT_FAILURE); */
+  /* return (EXIT_SUCCESS); */
 }

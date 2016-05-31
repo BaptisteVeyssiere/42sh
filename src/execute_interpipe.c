@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Mon May 30 18:07:42 2016 Baptiste veyssiere
+** Last update Tue May 31 23:09:58 2016 Baptiste veyssiere
 */
 
 #include <sys/wait.h>
@@ -49,6 +49,8 @@ static int	check_status(int pid, int *ret)
   status = 0;
   if (waitpid(pid, &status, WUNTRACED | WCONTINUED) == -1)
     return (-1);
+  if (WIFEXITED(status))
+    *ret = WEXITSTATUS(status);
   if (WIFSIGNALED(status))
     {
       signal = WTERMSIG(status);
@@ -96,9 +98,8 @@ static int	execute_loop(t_command *and_or, char ***env,
     if (pipe(fildes[i - 1]) == -1)
       return (my_int_perror("Error while using pipe function.\n", -1));
   while (--i >= 0)
-    if (is_builtin(and_or->command[i], 0) == 1 &&
-	exec_builtins(and_or->command[i]->args, env))
-      ret = 1;
+    if (is_builtin(and_or->command[i], 0) == 1)
+      ret = exec_builtins(and_or->command[i]->args, env);
     else if (is_builtin(and_or->command[i], 0) != 1)
       {
 	if ((pid[i] = fork()) == -1)
