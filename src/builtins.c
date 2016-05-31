@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 02:01:39 2016 Baptiste veyssiere
-** Last update Mon May 30 00:24:16 2016 Baptiste veyssiere
+** Last update Tue May 31 00:55:30 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -17,7 +17,8 @@ int	is_builtin(t_interpipe *command, int mode)
     {
       if (my_strcmp_strict(command->args[0], "cd") ||
           my_strcmp_strict(command->args[0], "exit") ||
-          my_strcmp_strict(command->args[0], "setenv") ||
+          (my_strcmp_strict(command->args[0], "setenv") &&
+	   command->args[1]) ||
           my_strcmp_strict(command->args[0], "unsetenv"))
         return (1);
     }
@@ -25,9 +26,10 @@ int	is_builtin(t_interpipe *command, int mode)
     {
       if (!my_strcmp_strict(command->args[0], "cd") &&
           !my_strcmp_strict(command->args[0], "exit") &&
-          !my_strcmp_strict(command->args[0], "setenv") &&
-          !my_strcmp_strict(command->args[0], "unsetenv"))
-        return (1);
+          (!my_strcmp_strict(command->args[0], "setenv") ||
+	   (my_strcmp_strict(command->args[0], "setenv") && !(command->args[1]))) &&
+	  !my_strcmp_strict(command->args[0], "unsetenv"))
+	return (1);
     }
   return (0);
 }

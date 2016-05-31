@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Mon May 30 16:52:58 2016 Baptiste veyssiere
+** Last update Tue May 31 17:52:07 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -44,7 +44,7 @@ static int	execute_subtree(t_command **and_or, char ***env)
 	    return (-1);
 	}
     }
-  return (0);
+  return (ret);
 }
 
 static int	execute_tree(t_tree **tree, char ***env)
@@ -59,7 +59,7 @@ static int	execute_tree(t_tree **tree, char ***env)
       if (error == -1)
 	return (-1);
     }
-  return (0);
+  return (error);
 }
 
 int		execute_command(char *str, char ***env)
@@ -81,9 +81,9 @@ int		execute_command(char *str, char ***env)
   if (error == 1)
     return (0);
   free(command);
-  if (fill_leaf(tree) == -1 ||
-      execute_tree(tree, env) == -1)
+  if (fill_leaf(tree) == -1)
     return (-1);
+  error = execute_tree(tree, env);
   free_tree(tree);
-  return (0);
+  return (error);
 }

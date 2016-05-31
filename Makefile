@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Mon May 30 01:47:57 2016 Baptiste veyssiere
+## Last update Mon May 30 23:59:09 2016 Baptiste veyssiere
 ##
 
 NAME	= 42sh
@@ -48,7 +48,8 @@ SRC	= src/main.c \
 	src/echo.c \
 	src/exit.c \
 	src/cd.c \
-	src/tools_bis.c
+	src/tools_bis.c \
+	src/check_if_directory.c
 
 SRCDIR	= src
 

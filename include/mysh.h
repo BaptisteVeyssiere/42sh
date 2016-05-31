@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Mon May 30 18:03:29 2016 Baptiste veyssiere
+** Last update Tue May 31 20:11:00 2016 Baptiste veyssiere
 */
 
 #ifndef MYSH_H_
@@ -123,7 +123,7 @@ int	get_redirect_files(t_interpipe*, char*);
 /*
 ** prompt.c
 */
-void	aff_prompt(char**);
+int	aff_prompt(char**);
 char	**get_prompt();
 void	free_prompt(char**);
 
@@ -215,5 +215,11 @@ int	cd_builtin(char***, char**);
 */
 int	my_tablen(char**);
 int	my_getnbr(char*);
+
+/*
+** check_if_directory.c
+*/
+int	check_if_directory(char*);
+int	check_if_exist(char*);
 
 #endif /* !MYSH_H_ */

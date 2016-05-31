@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 21:38:00 2016 Baptiste veyssiere
-** Last update Mon May 30 16:53:53 2016 Baptiste veyssiere
+** Last update Tue May 31 18:05:34 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -78,15 +78,16 @@ static int	add_path(char **command, char **env)
   char		**tab;
   int		ret;
 
-  if (env == NULL)
+  if (env == NULL || (path = get_varenv(env, "PATH")) == NULL)
     {
+      path = NULL;
       if (!(path = malloc(my_strlen("/bin"))))
         return (-1);
       path[my_strlen("/bin")] = 0;
       my_strcpy("/bin", path);
     }
-  else if ((path = get_varenv(env, "PATH")) == NULL)
-    return (1);
+  /* else if ((path = get_varenv(env, "PATH")) == NULL) */
+  /*   return (1); */
   if ((tab = get_varpath(path)) == NULL)
     return (-1);
   ret = test_path(tab, command);
@@ -106,6 +107,8 @@ int	check_and_add_path(t_interpipe **command, char **env)
       if (command[i]->args[0][0] == '.' &&
 	  (!command[i]->args[0][1] || command[i]->args[0][1] == '.'))
 	return (1);
+      if ((ret = check_if_directory(command[i]->args[0])))
+	return (ret);
       ret = check_if_builtin(command[i]->args[0]);
       if (ret && (ret = add_path(&(command[i]->args[0]), env)))
 	{

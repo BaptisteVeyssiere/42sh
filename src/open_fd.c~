@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 00:28:56 2016 Baptiste veyssiere
-** Last update Tue May 31 22:08:52 2016 Baptiste veyssiere
+** Last update Tue May 31 22:05:06 2016 Baptiste veyssiere
 */
 
 #include <sys/stat.h>
@@ -41,7 +41,7 @@ static int	output_open(char *file, int red_nbr)
   if (red_nbr == 2)
     fd = open(file, O_CREAT | O_APPEND | O_WRONLY, mode);
   else
-    fd = open(file, O_CREAT | O_TRUNC | O_WRONLY, mode);
+    fd = open(file, O_CREAT | O_TRUNC | O_WRONLY | O_SYNC, mode);
   return (fd);
 }
 

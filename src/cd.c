@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Mar 30 16:41:56 2016 Baptiste veyssiere
-** Last update Mon May 30 01:45:05 2016 Baptiste veyssiere
+** Last update Tue May 31 20:01:42 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -75,6 +75,8 @@ static int	cd_basic(char **command, char ***env)
   buf = NULL;
   if ((pwd = getcwd(buf, 100)) == NULL)
     return (-1);
+  if (check_if_exist(command[1]))
+    return (1);
   if (chdir(command[1]) == -1)
     return (-1);
   buf = NULL;
@@ -105,6 +107,6 @@ int		cd_builtin(char ***env, char **command)
     }
   else if (!(oldpwd = getcwd(buf, 100)) ||
 	   cd_basic(command, env))
-    return (-1);
+    return (1);
   return (0);
 }

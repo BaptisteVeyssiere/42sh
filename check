@@ -1,6 +1,6 @@
 1:
-faire le builtin echo (correctement)
-2.5:
-Et du coup changer la variable ret en cas d'erreur
+messages d'erreurs pour le cd
+2:
+exit 0 && ls / exit 1 && ls (c'est parce que exit 0 renvoie 0 donc commande marche (et du coup y a le || aussi))
 3:
-Verifier que la commande a executer n'est pas un dossier => Permission denied (seulement si la commande commance par /)
+changer la methode de recuperation des redirect files
