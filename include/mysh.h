@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Wed Jun  1 08:59:32 2016 Baptiste veyssiere
+** Last update Wed Jun  1 19:00:33 2016 ilyas semmaoui
 */
 
 #ifndef MYSH_H_
@@ -16,6 +16,18 @@
 # ifndef WCOREDUMP
 #  define WCOREDUMP(status) ((status) & 0x80)
 # endif /* !WCOREDUMP */
+
+typedef struct	s_counter
+{
+  int		i;
+  int		redir;
+  int		count;
+  int		pipe;
+  int		key;
+  int		arg;
+  int		except;
+  int		error;
+}		t_counter;
 
 typedef struct	s_interpipe
 {
@@ -224,5 +236,23 @@ int	check_if_exist(char*);
 int     check_exit(t_tree**);
 int	check_varenv_name(char*);
 int	check_permission(char*, char);
+
+/*
+** check_command.c
+*/
+int	check_command(char *);
+
+/*
+** verif_command.c
+*/
+void	change_count_value(char *, t_counter *);
+int	check_pipe_and_args(char *, t_counter *);
+int	check_redir_and_args(char *, t_counter *);
+int	eof_check(t_counter *);
+
+/*
+** match.c
+*/
+int	match(char, char *);
 
 #endif /* !MYSH_H_ */
