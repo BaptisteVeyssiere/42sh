@@ -5,12 +5,31 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Wed Jun  1 19:06:39 2016 Baptiste veyssiere
+** Last update Wed Jun  1 19:37:00 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
+
+static int	close_files(t_interpipe **command)
+{
+  int		i;
+  int		ret;
+
+  i = -1;
+  ret = 0;
+  while (command[++i])
+    {
+      if (command[i]->input_file)
+	ret = close(command[i]->fd_input);
+      if (command[i]->output_file)
+	ret = close(command[i]->fd_output);
+    }
+  if (ret == -1)
+    return (-1);
+  return (0);
+}
 
 static int	execute_and_or(t_command *and_or, char ***env)
 {
@@ -22,7 +41,10 @@ static int	execute_and_or(t_command *and_or, char ***env)
     return (1);
   if ((ret = check_and_add_path(and_or->command, *env)))
     return (ret);
-  return (execute_interpipe(and_or, env));
+  ret = execute_interpipe(and_or, env);
+  if (close_files(and_or->command) == -1)
+    return (-1);
+  return (ret);
 }
 
 static int	execute_subtree(t_command **and_or, char ***env)
