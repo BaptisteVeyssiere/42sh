@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Mar 30 16:40:11 2016 Baptiste veyssiere
-** Last update Mon May 30 01:50:07 2016 Baptiste veyssiere
+** Last update Wed Jun  1 04:10:42 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -131,6 +131,8 @@ int	setenv_builtin(char ***env, char **command)
     return (my_int_perror("setenv: Too few arguments.\n", 1));
   else if (i > 3)
     return (my_int_perror("setenv: Too many arguments.\n", 1));
+  if (check_varenv_name(command[1]))
+    return (1);
   if (!(new_env = add_var_to_env(*env, command)))
     return (-1);
   *env = new_env;

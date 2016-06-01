@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Tue May 31 22:36:19 2016 Baptiste veyssiere
+** Last update Wed Jun  1 08:59:32 2016 Baptiste veyssiere
 */
 
 #ifndef MYSH_H_
@@ -222,5 +222,7 @@ int	my_getnbr(char*);
 int	check_if_directory(char*);
 int	check_if_exist(char*);
 int     check_exit(t_tree**);
+int	check_varenv_name(char*);
+int	check_permission(char*, char);
 
 #endif /* !MYSH_H_ */

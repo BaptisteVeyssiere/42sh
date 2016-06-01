@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Mar 30 16:35:16 2016 Baptiste veyssiere
-** Last update Tue May 31 22:53:43 2016 Baptiste veyssiere
+** Last update Wed Jun  1 09:50:54 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -50,11 +50,5 @@ int	exit_builtin(char ***env, char **command)
 	return (1);
       nbr = my_getnbr(command[1]);
     }
-  /* if (*env) */
-  /*   free_env(*env); */
-  /* free_tab(command); */
-  /* if (write(1, "exit\n", 5) == -1) */
-  /*   return (1); */
-  /* exit(nbr); */
   return (nbr);
 }

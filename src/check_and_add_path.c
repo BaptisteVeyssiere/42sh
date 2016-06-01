@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 21:38:00 2016 Baptiste veyssiere
-** Last update Tue May 31 18:05:34 2016 Baptiste veyssiere
+** Last update Wed Jun  1 09:48:45 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -86,8 +86,6 @@ static int	add_path(char **command, char **env)
       path[my_strlen("/bin")] = 0;
       my_strcpy("/bin", path);
     }
-  /* else if ((path = get_varenv(env, "PATH")) == NULL) */
-  /*   return (1); */
   if ((tab = get_varpath(path)) == NULL)
     return (-1);
   ret = test_path(tab, command);
@@ -102,10 +100,11 @@ int	check_and_add_path(t_interpipe **command, char **env)
   int	ret;
 
   i = -1;
-  while (command[++i])
+  while (command[++i] && command[i]->args[0])
     {
       if (command[i]->args[0][0] == '.' &&
-	  (!command[i]->args[0][1] || command[i]->args[0][1] == '.'))
+	  (!command[i]->args[0][1] ||
+	   (command[i]->args[0][1] == '.' && !command[i]->args[0][2])))
 	return (1);
       if ((ret = check_if_directory(command[i]->args[0])))
 	return (ret);
@@ -116,6 +115,8 @@ int	check_and_add_path(t_interpipe **command, char **env)
 	    return (-1);
 	  return (ret);
 	}
+      if (check_permission(command[i]->args[0], 'x'))
+	return (1);
     }
   return (0);
 }

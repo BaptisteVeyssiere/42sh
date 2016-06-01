@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:43:17 2016 Baptiste veyssiere
-** Last update Tue May 31 23:09:21 2016 Baptiste veyssiere
+** Last update Wed Jun  1 17:58:15 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -47,7 +47,7 @@ static int	exec_instruction(char if_builtin,
     }
   else if (execve(command->args[0],
 		  command->args, *env) == -1)
-    return (EXIT_FAILURE);
+    exit(EXIT_FAILURE);
   return (EXIT_SUCCESS);
 }
 

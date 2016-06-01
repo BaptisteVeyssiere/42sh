@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Tue May 31 22:36:48 2016 Baptiste veyssiere
+** Last update Wed Jun  1 09:42:18 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -31,14 +31,15 @@ static int	execute_subtree(t_command **and_or, char ***env)
   int		i;
 
   i = -1;
-  ret = -1;
-  while (and_or[++i])
+  ret = 0;
+  while (and_or[++i] && and_or[i]->command[0] &&
+	 and_or[i]->command[0]->args[0] && and_or[i]->command[0]->args[0][0])
     {
       if (ret == 0 && and_or[i]->or == 1)
 	return (0);
-      if (ret == -1 ||
-	  (ret == 0 && and_or[i]->and == 1) ||
-	  (ret == 1 && and_or[i]->or == 1))
+      if ((!ret && !i) ||
+	  (!ret && and_or[i]->and == 1) ||
+	  (ret && and_or[i]->or == 1))
 	{
 	  if ((ret = execute_and_or(and_or[i], env)) == -1)
 	    return (-1);

@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 23:49:50 2016 Baptiste veyssiere
-** Last update Tue May 31 22:56:53 2016 Baptiste veyssiere
+** Last update Wed Jun  1 09:14:19 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -73,13 +73,57 @@ int	check_exit(t_tree **tree)
 	  k = -1;
 	  while (tree[i]->and_or[j]->command[++k]);
 	  --k;
-	  if (my_strcmp_strict(tree[i]->and_or[j]->command[k]->args[0], "exit"))
+	  if (tree[i]->and_or[j]->command[k]->args[0] &&
+	      my_strcmp_strict(tree[i]->and_or[j]->command[k]->args[0], "exit"))
 	    {
 	      if (write(1, "exit\n", 5) == -1)
 		return (1);
 	      return (1);
 	    }
 	}
+    }
+  return (0);
+}
+
+int	check_varenv_name(char *name)
+{
+  int	i;
+
+  i = -1;
+  while (name[++i])
+    if (name[i] < '0' ||
+	(name[i] > '9' && name[i] < 'A') ||
+	(name[i] > 'Z' && name[i] < 'a') ||
+	name[i] > 'z')
+      {
+	if (write(2, name, my_strlen(name)) == -1 ||
+	    my_int_perror(": Variable name must contain", 0))
+	  return (-1);
+	return (my_int_perror(" alphanumeric characters.\n", 1));
+      }
+  return (0);
+}
+
+int		check_permission(char *file, char permission)
+{
+  struct stat	buf;
+  int		check;
+
+  if (access(file, F_OK))
+    return (0);
+  if (stat(file, &buf) == -1)
+    return (-1);
+  if (permission == 'r')
+    check = (S_IRUSR & buf.st_mode);
+  else if (permission == 'w')
+    check = (S_IWUSR & buf.st_mode);
+  else if (permission == 'x')
+    check = (S_IXUSR & buf.st_mode);
+  if (!check)
+    {
+      if (write(2, file, my_strlen(file)) == -1)
+        return (-1);
+      return (my_int_perror(": Permission denied.\n", 1));
     }
   return (0);
 }
