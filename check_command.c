@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Thu May 26 14:52:40 2016 Baptiste veyssiere
-** Last update Wed Jun  1 03:17:15 2016 ilyas semmaoui
+** Last update Wed Jun  1 03:25:22 2016 ilyas semmaoui
 */
 
 typedef struct	s_counter
@@ -56,7 +56,8 @@ void		change_count_value(char *command, t_counter *cnt)
       command[cnt->i] == ';')
     cnt->key = 0;
   if (match(command[cnt->i], "><|& \t;") == 1 &&
-      (command[cnt->i + 1] == '\0' || match(command[cnt->i + 1], "><|& \t;") == 0))
+      (command[cnt->i + 1] == '\0' ||
+       match(command[cnt->i + 1], "><|& \t;") == 0))
     cnt->arg += 1;
   if (command[cnt->i] == '>')
     cnt->key = 1;
@@ -66,7 +67,8 @@ int		check_pipe_and_args(char *command, t_counter *cnt)
 {
   if (command[cnt->i] == ';')
     {
-      if ((cnt->error == 1 && cnt->arg < 2) || (cnt->arg == 1 && cnt->redir > 0))
+      if ((cnt->error == 1 && cnt->arg < 2) ||
+	  (cnt->arg == 1 && cnt->redir > 0))
 	return (1);
       cnt->arg = 0;
       cnt->error = 0;
@@ -75,7 +77,8 @@ int		check_pipe_and_args(char *command, t_counter *cnt)
   if (command[cnt->i] == '|' && command[cnt->i - 1] != '|' &&
       command[cnt->i + 1] != '|')
     {
-      if ((cnt->error == 1 && cnt->arg < 2) || (cnt->arg == 1 && cnt->redir > 0))
+      if ((cnt->error == 1 && cnt->arg < 2) ||
+	  (cnt->arg == 1 && cnt->redir > 0))
 	return (1);
       if (cnt->key == 1 && cnt->arg == 0)
 	return (2);
@@ -101,15 +104,15 @@ int		check_redir_and_args(char *command, t_counter *cnt)
 	  (cnt->redir == 2 && match(command[cnt->i - 1], "\t ") == 0))
 	return (2);
     }
-  if (cnt->pipe > 0 && command[cnt->i] == ';')
-    return (1);
-  if (cnt->count > 0 && (cnt->pipe > 0 || command[cnt->i] == ';'))
+  if ((cnt->pipe > 0 && command[cnt->i] == ';') ||
+      (cnt->count > 0 && (cnt->pipe > 0 || command[cnt->i] == ';')))
     return (1);
   if ((command[cnt->i] == '|' && command[cnt->i + 1] == '|') ||
       (command[cnt->i] == '&' && command[cnt->i + 1] == '&'))
     {
       cnt->count++;
-      if ((cnt->error == 1 && cnt->arg < 2) || (cnt->arg == 1 && cnt->redir > 0))
+      if ((cnt->error == 1 && cnt->arg < 2) ||
+	  (cnt->arg == 1 && cnt->redir > 0))
 	return (1);
       cnt->arg = 0;
       cnt->error = 0;
