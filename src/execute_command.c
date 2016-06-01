@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Wed Jun  1 18:48:09 2016 Baptiste veyssiere
+** Last update Wed Jun  1 19:06:39 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -76,6 +76,8 @@ int		execute_command(char *str, char ***env)
 
   if (!(command = epure_str(str)))
     return (-1);
+  if ((error = check_command(command)))
+    return (error);
   if (!command[0])
     {
       free(command);

@@ -5,9 +5,10 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Thu May 26 14:52:40 2016 Baptiste veyssiere
-** Last update Wed Jun  1 18:57:51 2016 ilyas semmaoui
+** Last update Wed Jun  1 19:07:41 2016 Baptiste veyssiere
 */
 
+#include <unistd.h>
 #include "mysh.h"
 
 static void		init_counter(t_counter *cnt)
