@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Wed Jun  1 09:42:18 2016 Baptiste veyssiere
+** Last update Wed Jun  1 18:48:09 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -61,7 +61,10 @@ static int	execute_tree(t_tree **tree, char ***env)
 	return (-1);
     }
   if (check_exit(tree))
-    exit(error);
+    {
+      free_tree(tree);
+      exit(error);
+    }
   return (error);
 }
 
