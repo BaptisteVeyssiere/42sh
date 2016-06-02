@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Mon May 30 00:24:45 2016 Baptiste veyssiere
+** Last update Wed Jun  1 18:28:10 2016 vigner_g
 */
 
 #include <sys/wait.h>
@@ -68,7 +68,7 @@ static int	wait_loop(t_interpipe *command, int *ret,
 }
 
 static int	execute_loop(t_command *and_or, char ***env,
-			     int **fildes, int *pid)
+			     int **fildes, int *pid, t_datas *data)
 {
   int		i;
   int		ret;
@@ -80,7 +80,7 @@ static int	execute_loop(t_command *and_or, char ***env,
       return (my_int_perror("Error while using pipe function.\n", -1));
   while (--i >= 0)
     if (is_builtin(and_or->command[i], 0) == 1 &&
-	exec_builtins(and_or->command[i]->args, env))
+	exec_builtins(and_or->command[i]->args, env, data))
       ret = 1;
     else if (is_builtin(and_or->command[i], 0) != 1)
       {
@@ -90,16 +90,16 @@ static int	execute_loop(t_command *and_or, char ***env,
 	  {
 	    if (pipe_fd(and_or, fildes, i) == -1)
 	      return (-1);
-	    return (do_instruction(and_or, env, i));
+	    return (do_instruction(and_or, env, i, data));
 	  }
       }
   while (++i <= and_or->pipe_nbr)
     if (wait_loop(and_or->command[i], &ret, fildes, pid, i) == -1)
       return (-1);
   return (ret);
-}
+}/* amener le data jusqu'a là */
 
-int	execute_interpipe(t_command *and_or, char ***env)
+int	execute_interpipe(t_command *and_or, char ***env, t_datas *data)
 {
   int	i;
   int   **fildes;
@@ -114,7 +114,7 @@ int	execute_interpipe(t_command *and_or, char ***env)
   while (++i < and_or->pipe_nbr)
     if ((fildes[i] = malloc(sizeof(int) * 2)) == NULL)
       return (-1);
-  if ((ret = execute_loop(and_or, env, fildes, pid)) == -1)
+  if ((ret = execute_loop(and_or, env, fildes, pid, data)) == -1)
     return (-1);
   if (and_or->pipe_nbr)
     {
@@ -125,4 +125,4 @@ int	execute_interpipe(t_command *and_or, char ***env)
     }
   free(pid);
   return (ret);
-}
+}/* amenier le data jusque là */

@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 21:38:00 2016 Baptiste veyssiere
-** Last update Mon May 30 16:53:53 2016 Baptiste veyssiere
+** Last update Thu Jun  2 11:29:40 2016 vigner_g
 */
 
 #include <stdlib.h>
@@ -19,7 +19,9 @@ static int	check_if_builtin(char *command)
       my_strcmp_strict(command, "unsetenv") == 1 ||
       my_strcmp_strict(command, "echo") == 1 ||
       my_strcmp_strict(command, "exit") == 1 ||
-      my_strcmp_strict(command, "cd") == 1)
+      my_strcmp_strict(command, "cd") == 1 ||
+      my_strcmp_strict(command, "profile") == 1 ||
+      my_strcmp_strict(command, "history") == 1)
     return (0);
   return (1);
 }

@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 02:01:39 2016 Baptiste veyssiere
-** Last update Mon May 30 00:24:16 2016 Baptiste veyssiere
+** Last update Thu Jun  2 11:50:41 2016 vigner_g
 */
 
 #include <unistd.h>
@@ -18,7 +18,9 @@ int	is_builtin(t_interpipe *command, int mode)
       if (my_strcmp_strict(command->args[0], "cd") ||
           my_strcmp_strict(command->args[0], "exit") ||
           my_strcmp_strict(command->args[0], "setenv") ||
-          my_strcmp_strict(command->args[0], "unsetenv"))
+          my_strcmp_strict(command->args[0], "unsetenv") ||
+	  my_strcmp_strict(command->args[0], "profile") ||
+	  my_strcmp_strict(command->args[0], "history"))
         return (1);
     }
   else if (mode == 1)
@@ -26,13 +28,15 @@ int	is_builtin(t_interpipe *command, int mode)
       if (!my_strcmp_strict(command->args[0], "cd") &&
           !my_strcmp_strict(command->args[0], "exit") &&
           !my_strcmp_strict(command->args[0], "setenv") &&
-          !my_strcmp_strict(command->args[0], "unsetenv"))
+          !my_strcmp_strict(command->args[0], "unsetenv") &&
+	  !my_strcmp_strict(command->args[0], "profile") &&
+	  !my_strcmp_strict(command->args[0], "profile"))
         return (1);
     }
   return (0);
 }
 
-int	exec_builtins(char **args, char ***env)
+int	exec_builtins(char **args, char ***env, t_datas *data)
 {
   int	(*ptr[7])(char***, char**) =
     {
@@ -43,7 +47,7 @@ int	exec_builtins(char **args, char ***env)
       exit_builtin,
       echo_builtin,
       NULL
-    };
+    };/* à déplacer */
   char	*name[7];
   int	i;
 
@@ -52,8 +56,12 @@ int	exec_builtins(char **args, char ***env)
   name[2] = "setenv";
   name[3] = "unsetenv";
   name[4] = "exit";
-  name[5] = "echo";
+  name[5] = "echo";/* à déplacer */
   i = -1;
+  if (args[0] != NULL && my_strcmp_strict(args[0], "profile"))
+    profile(args, data);
+  if (args[0] != NULL && my_strcmp_strict(args[0], "history"))
+    aff_history(data->history);
   while (++i < 6 && !my_strcmp_strict(name[i], args[0]));
   if (i == 6)
     return (1);
