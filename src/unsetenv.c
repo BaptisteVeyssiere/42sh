@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed Mar 30 16:41:28 2016 Baptiste veyssiere
-** Last update Mon May 30 01:35:36 2016 Baptiste veyssiere
+** Last update Tue May 31 01:02:03 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -75,7 +75,7 @@ int	unsetenv_builtin(char ***env, char **command)
   if (arg_nbr < 2)
     return (my_int_perror("unsetenv: Too few arguments.\n", 1));
   else if (arg_nbr > 2)
-    return (my_int_perror("unsetenv: Too few arguments._n", 1));
+    return (my_int_perror("unsetenv: Too few arguments.\n", 1));
   else if (!env)
     return (0);
   if (!(new_env = unsetenv_var_of_env(*env, command)))

@@ -5,12 +5,31 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Wed Jun  1 18:15:08 2016 vigner_g
+** Last update Thu Jun  2 12:11:11 2016 vigner_g
 */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
+
+static int	close_files(t_interpipe **command)
+{
+  int		i;
+  int		ret;
+
+  i = -1;
+  ret = 0;
+  while (command[++i])
+    {
+      if (command[i]->input_file)
+	ret = close(command[i]->fd_input);
+      if (command[i]->output_file)
+	ret = close(command[i]->fd_output);
+    }
+  if (ret == -1)
+    return (-1);
+  return (0);
+}
 
 static int	execute_and_or(t_command *and_or, char ***env, t_datas *data)
 {
@@ -22,7 +41,10 @@ static int	execute_and_or(t_command *and_or, char ***env, t_datas *data)
     return (1);
   if ((ret = check_and_add_path(and_or->command, *env)))
     return (ret);
-  return (execute_interpipe(and_or, env, data));
+  ret = execute_interpipe(and_or, env, data);
+  if (close_files(and_or->command) == -1)
+    return (-1);
+  return (ret);
 }
 
 static int	execute_subtree(t_command **and_or, char ***env, t_datas *data)
@@ -31,20 +53,21 @@ static int	execute_subtree(t_command **and_or, char ***env, t_datas *data)
   int		i;
 
   i = -1;
-  ret = -1;
-  while (and_or[++i])
+  ret = 0;
+  while (and_or[++i] && and_or[i]->command[0] &&
+	 and_or[i]->command[0]->args[0] && and_or[i]->command[0]->args[0][0])
     {
       if (ret == 0 && and_or[i]->or == 1)
 	return (0);
-      if (ret == -1 ||
-	  (ret == 0 && and_or[i]->and == 1) ||
-	  (ret == 1 && and_or[i]->or == 1))
+      if ((!ret && !i) ||
+	  (!ret && and_or[i]->and == 1) ||
+	  (ret && and_or[i]->or == 1))
 	{
 	  if ((ret = execute_and_or(and_or[i], env, data)) == -1)
 	    return (-1);
 	}
     }
-  return (0);
+  return (ret);
 }
 
 static int	execute_tree(t_tree **tree, char ***env, t_datas *data)
@@ -59,7 +82,12 @@ static int	execute_tree(t_tree **tree, char ***env, t_datas *data)
       if (error == -1)
 	return (-1);
     }
-  return (0);
+  if (check_exit(tree))
+    {
+      free_tree(tree);
+      exit(error);
+    }
+  return (error);
 }
 
 static int	free_and_ret(char *command)
@@ -77,6 +105,8 @@ int		execute_command(t_datas *data, char *str, char ***env)
 
   if (!(command = epure_str(str)))
     return (-1);
+  if ((error = check_command(command)))
+    return (error);
   if (!command[0])
     return (free_and_ret(command));
   if ((data->history = add_a_command(data->history, command)) == NULL ||
@@ -87,10 +117,9 @@ int		execute_command(t_datas *data, char *str, char ***env)
     return (-1);
   if (error == 1)
     return (0);
-  /* free(command); */
-  if (fill_leaf(tree) == -1 ||
-      execute_tree(tree, env, data) == -1)
+  if (fill_leaf(tree) == -1)
     return (-1);
+  error = execute_tree(tree, env, data);
   free_tree(tree);
-  return (0);
+  return (error);
 }

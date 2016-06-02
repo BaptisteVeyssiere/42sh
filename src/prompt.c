@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Tue Mar 29 19:14:47 2016 Baptiste veyssiere
-** Last update Sat May 28 18:57:45 2016 Baptiste veyssiere
+** Last update Tue May 31 20:49:38 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -35,7 +35,7 @@ char	**get_prompt()
   return (prompt);
 }
 
-void	aff_prompt(char **prompt)
+int	aff_prompt(char **prompt)
 {
   int	i;
 
@@ -46,6 +46,8 @@ void	aff_prompt(char **prompt)
     i = 0;
   if (i > 0)
     ++i;
-  write(1, &(prompt[0][i]), my_strlen(&(prompt[0][i])));
-  write(1, "> ", 2);
+  if (write(1, &(prompt[0][i]), my_strlen(&(prompt[0][i]))) == -1 ||
+      write(1, "> ", 2) == -1)
+    return (-1);
+  return (0);
 }

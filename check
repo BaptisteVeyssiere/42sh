@@ -1,6 +1,10 @@
 1:
-faire le builtin echo (correctement)
+Enlever les | cat inutiles
 2:
-Verifier le retour du fork et le status pour le check d'erreur
-2.5:
-Et du coup changer la variable ret en cas d'erreur
+rsc/notc: Exec format error. Binary file not executable.
+3:
+Remplacer les $VAR par les variables d'environnement
+4:
+Faire le jobcontrol
+5:
+ncurses pour pouvoir revenir dans la chaine de caractere

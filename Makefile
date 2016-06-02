@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Thu Jun  2 11:30:47 2016 vigner_g
+## Last update Thu Jun  2 12:10:49 2016 vigner_g
 ##
 
 NAME	= 42sh
@@ -51,7 +51,11 @@ SRC	= src/main.c \
 	src/tools_bis.c \
 	src/history.c	\
 	src/profiles.c	\
-	src/aff_history.c
+	src/aff_history.c	\
+	src/check_if_directory.c \
+	src/verif_command.c \
+	src/check_command.c \
+	src/match.c
 
 SRCDIR	= src
 

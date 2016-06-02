@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Thu Jun  2 11:50:34 2016 vigner_g
+** Last update Thu Jun  2 12:10:11 2016 vigner_g
 */
 
 #ifndef MYSH_H_
@@ -13,7 +13,23 @@
 
 # define UNUSED __attribute__((unused))
 
-typedef struct		s_interpipe
+# ifndef WCOREDUMP
+#  define WCOREDUMP(status) ((status) & 0x80)
+# endif /* !WCOREDUMP */
+
+typedef struct	s_counter
+{
+  int		i;
+  int		redir;
+  int		count;
+  int		pipe;
+  int		key;
+  int		arg;
+  int		except;
+  int		error;
+}		t_counter;
+
+typedef struct	s_interpipe
 {
   int			fd_input;
   char			*input_file;
@@ -142,7 +158,7 @@ int	get_redirect_files(t_interpipe*, char*);
 /*
 ** prompt.c
 */
-void	aff_prompt(char**);
+int	aff_prompt(char**);
 char	**get_prompt();
 void	free_prompt(char**);
 
@@ -255,5 +271,32 @@ int		profile(char **, t_datas *);
 ** aff_history.c
 */
 int		aff_history(t_history *);
+
+/*
+** check_if_directory.c
+*/
+int	check_if_directory(char*);
+int	check_if_exist(char*);
+int     check_exit(t_tree**);
+int	check_varenv_name(char*);
+int	check_permission(char*, char);
+
+/*
+** check_command.c
+*/
+int	check_command(char *);
+
+/*
+** verif_command.c
+*/
+void	change_count_value(char *, t_counter *);
+int	check_pipe_and_args(char *, t_counter *);
+int	check_redir_and_args(char *, t_counter *);
+int	eof_check(t_counter *);
+
+/*
+** match.c
+*/
+int	match(char, char *);
 
 #endif /* !MYSH_H_ */

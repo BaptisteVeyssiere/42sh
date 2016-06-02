@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 21:38:00 2016 Baptiste veyssiere
-** Last update Thu Jun  2 11:29:40 2016 vigner_g
+** Last update Thu Jun  2 12:07:39 2016 vigner_g
 */
 
 #include <stdlib.h>
@@ -80,15 +80,14 @@ static int	add_path(char **command, char **env)
   char		**tab;
   int		ret;
 
-  if (env == NULL)
+  if (env == NULL || (path = get_varenv(env, "PATH")) == NULL)
     {
+      path = NULL;
       if (!(path = malloc(my_strlen("/bin"))))
         return (-1);
       path[my_strlen("/bin")] = 0;
       my_strcpy("/bin", path);
     }
-  else if ((path = get_varenv(env, "PATH")) == NULL)
-    return (1);
   if ((tab = get_varpath(path)) == NULL)
     return (-1);
   ret = test_path(tab, command);
@@ -103,11 +102,14 @@ int	check_and_add_path(t_interpipe **command, char **env)
   int	ret;
 
   i = -1;
-  while (command[++i])
+  while (command[++i] && command[i]->args[0])
     {
       if (command[i]->args[0][0] == '.' &&
-	  (!command[i]->args[0][1] || command[i]->args[0][1] == '.'))
+	  (!command[i]->args[0][1] ||
+	   (command[i]->args[0][1] == '.' && !command[i]->args[0][2])))
 	return (1);
+      if ((ret = check_if_directory(command[i]->args[0])))
+	return (ret);
       ret = check_if_builtin(command[i]->args[0]);
       if (ret && (ret = add_path(&(command[i]->args[0]), env)))
 	{
@@ -115,6 +117,8 @@ int	check_and_add_path(t_interpipe **command, char **env)
 	    return (-1);
 	  return (ret);
 	}
+      if (check_permission(command[i]->args[0], 'x'))
+	return (1);
     }
   return (0);
 }

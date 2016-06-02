@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Wed Jun  1 18:28:10 2016 vigner_g
+** Last update Thu Jun  2 12:12:39 2016 vigner_g
 */
 
 #include <sys/wait.h>
@@ -41,22 +41,41 @@ static int	pipe_fd(t_command *command, int **fildes, int i)
   return (0);
 }
 
+static int	check_status(int pid, int *ret)
+{
+  int		status;
+  int		signal;
+
+  status = 0;
+  if (waitpid(pid, &status, WUNTRACED | WCONTINUED) == -1)
+    return (-1);
+  if (WIFEXITED(status))
+    *ret = WEXITSTATUS(status);
+  if (WIFSIGNALED(status))
+    {
+      signal = WTERMSIG(status);
+      if (WCOREDUMP(status) && (*ret = 139) == 139 &&
+	  write(1,"segmentation fault (core dumped)\n", 33) == -1)
+	return (-1);
+      else if (signal == SIGSEGV &&
+	       (*ret = 139) == 139 && write(1, "Segmentation fault\n", 19) == -1)
+	return (-1);
+      else if (signal == SIGFPE &&
+	       (*ret = 136) == 136 && write(1, "Floating exception\n", 19) == -1)
+	return (-1);
+    }
+  return (0);
+}
+
 static int	wait_loop(t_interpipe *command, int *ret,
 			  int **fildes, int *pid, int i)
 {
   int		status;
 
-  ret = ret;
-  /* Changer ret en cas d'erreur (ne pas oublier) */
   if (is_builtin(command, 1) == 1)
     {
-      status = 0;
-      if (waitpid(pid[i], &status, WUNTRACED | WCONTINUED) < 0 ||
-          status == 11 || WTERMSIG(status) == SIGSEGV)
-        {
-          write(1, "Segmentation fault\n", 19);
-          return (-1);
-	}
+      if ((status = check_status(pid[i], ret)))
+	return (status);
       if (command->pipe &&
           close(fildes[i][1]) == -1)
         return (my_int_perror("Error while using close function.\n", -1));
@@ -80,7 +99,7 @@ static int	execute_loop(t_command *and_or, char ***env,
       return (my_int_perror("Error while using pipe function.\n", -1));
   while (--i >= 0)
     if (is_builtin(and_or->command[i], 0) == 1 &&
-	exec_builtins(and_or->command[i]->args, env, data))
+	(ret = exec_builtins(and_or->command[i]->args, env, data)))
       ret = 1;
     else if (is_builtin(and_or->command[i], 0) != 1)
       {
@@ -97,7 +116,7 @@ static int	execute_loop(t_command *and_or, char ***env,
     if (wait_loop(and_or->command[i], &ret, fildes, pid, i) == -1)
       return (-1);
   return (ret);
-}/* amener le data jusqu'a là */
+}
 
 int	execute_interpipe(t_command *and_or, char ***env, t_datas *data)
 {
@@ -125,4 +144,4 @@ int	execute_interpipe(t_command *and_or, char ***env, t_datas *data)
     }
   free(pid);
   return (ret);
-}/* amenier le data jusque là */
+}

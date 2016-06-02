@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:18:44 2016 Baptiste veyssiere
-** Last update Thu May 26 00:05:57 2016 Baptiste veyssiere
+** Last update Wed Jun  1 04:38:16 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -87,7 +87,9 @@ int	get_tree(t_tree ***tree, char *command)
     return (-1);
   if (!(*tree = malloc(sizeof(t_tree*) * (semicolon_nbr + 2))))
     return (-1);
-  (*tree)[semicolon_nbr + 1] = NULL;
+  i = -1;
+  while (++i <= (semicolon_nbr + 1))
+    (*tree)[i] = NULL;
   i = -1;
   while (++i <= semicolon_nbr)
     if (!((*tree)[i] = get_and_or_tree(tab[i])))
