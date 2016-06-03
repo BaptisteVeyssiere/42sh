@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Thu Jun  2 12:01:59 2016 vigner_g
+** Last update Fri Jun  3 16:52:32 2016 vigner_g
 */
 
 #include	<stdlib.h>
@@ -34,7 +34,7 @@ static int	my_shell(char **env_tmp)
   while ((command = get_next_line(0)))
     {
 	if ((ret = execute_command(&data, command, &env)) == -1)
-	return (-1);
+	  return (-1);
       free_prompt(prompt);
       if (!(prompt = get_prompt()) ||
 	  aff_prompt(prompt) == -1)

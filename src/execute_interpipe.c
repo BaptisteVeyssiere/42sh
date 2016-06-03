@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Thu Jun  2 12:12:39 2016 vigner_g
+** Last update Fri Jun  3 16:47:31 2016 vigner_g
 */
 
 #include <sys/wait.h>
@@ -98,9 +98,8 @@ static int	execute_loop(t_command *and_or, char ***env,
     if (pipe(fildes[i - 1]) == -1)
       return (my_int_perror("Error while using pipe function.\n", -1));
   while (--i >= 0)
-    if (is_builtin(and_or->command[i], 0) == 1 &&
-	(ret = exec_builtins(and_or->command[i]->args, env, data)))
-      ret = 1;
+    if (is_builtin(and_or->command[i], 0) == 1)
+      ret = exec_builtins(and_or->command[i]->args, env, data);
     else if (is_builtin(and_or->command[i], 0) != 1)
       {
 	if ((pid[i] = fork()) == -1)
