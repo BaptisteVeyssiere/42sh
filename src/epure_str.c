@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:52:01 2016 Baptiste veyssiere
-** Last update Sat May 28 19:20:42 2016 Baptiste veyssiere
+** Last update Sat Jun  4 19:54:28 2016 vigner_g
 */
 
 #include <unistd.h>
@@ -49,13 +49,12 @@ char	*epure_str(char *str)
   j = -1;
   while (str[++i] && (str[i] == ' ' || str[i] == '\t'));
   if (!str[i])
-    return (free_line(str, epure));
+    return (epure);
   --i;
   while (str[++i])
     if ((str[i] != ' ' && str[i] != '\t') ||
         ((str[i] == ' ' || str[i] == '\t') &&
          str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t'))
       epure[++j] = str[i];
-  free(str);
   return (epure);
 }

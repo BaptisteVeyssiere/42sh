@@ -5,14 +5,14 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Sat Jun  4 18:44:06 2016 Baptiste veyssiere
+## Last update Sat Jun  4 19:36:56 2016 vigner_g
 ##
 
 NAME	= 42sh
 
 RM	= rm -f
 
-CC	= gcc
+CC	= gcc -g
 
 MKDIR	= mkdir -p
 
