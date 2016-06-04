@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Sat Jun  4 19:36:56 2016 vigner_g
+## Last update Sun Jun  5 00:13:31 2016 vigner_g
 ##
 
 NAME	= 42sh
@@ -57,7 +57,8 @@ SRC	= src/main.c \
 	src/check_command.c \
 	src/match.c \
 	src/check_var.c \
-	src/my_getstr.c
+	src/my_getstr.c	\
+	src/check_status.c
 
 SRCDIR	= src
 

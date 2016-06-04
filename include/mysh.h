@@ -5,13 +5,14 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:51:04 2016 vigner_g
+** Last update Sun Jun  5 00:14:19 2016 vigner_g
 */
 
 #ifndef MYSH_H_
 # define MYSH_H_
 
 # define UNUSED __attribute__((unused))
+# define I data->tmp
 
 # ifndef WCOREDUMP
 #  define WCOREDUMP(status) ((status) & 0x80)
@@ -63,13 +64,6 @@ typedef struct		s_command
   t_interpipe		**command;
 }			t_command;
 
-typedef struct		s_alias
-{
-  char			**from;
-  char			**to;
-  struct s_alias	*next;
-}			t_alias;
-
 typedef struct		s_history
 {
   char			*command;
@@ -84,7 +78,7 @@ typedef struct		s_datas
   char			**env;
   int			fd;
   t_history		*history;
-  t_alias		*alias;
+  int			tmp;
 }			t_datas;
 
 typedef struct		s_tree
@@ -321,5 +315,10 @@ int	check_var(t_interpipe**, char**, int);
 ** my_getstr.c
 */
 char	*my_getstr(int);
+
+/*
+** check_status.c
+*/
+int	check_status(int pid, int *ret);
 
 #endif /* !MYSH_H_ */

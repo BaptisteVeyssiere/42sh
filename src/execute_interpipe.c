@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:52:57 2016 Baptiste veyssiere
+** Last update Sun Jun  5 00:15:34 2016 vigner_g
 */
 
 #include <sys/wait.h>
@@ -30,32 +30,6 @@ static int	pipe_fd(t_command *command, int **fildes, int i)
   return (0);
 }
 
-static int	check_status(int pid, int *ret)
-{
-  int		status;
-  int		signal;
-
-  status = 0;
-  if (waitpid(pid, &status, WUNTRACED | WCONTINUED) == -1)
-    return (-1);
-  if (WIFEXITED(status))
-    *ret = WEXITSTATUS(status);
-  if (WIFSIGNALED(status))
-    {
-      signal = WTERMSIG(status);
-      if (WCOREDUMP(status) && (*ret = 139) == 139 &&
-	  write(1,"segmentation fault (core dumped)\n", 33) == -1)
-	return (-1);
-      else if (signal == SIGSEGV &&
-	       (*ret = 139) == 139 && write(1, "Segmentation fault\n", 19) == -1)
-	return (-1);
-      else if (signal == SIGFPE &&
-	       (*ret = 136) == 136 && write(1, "Floating exception\n", 19) == -1)
-	return (-1);
-    }
-  return (0);
-}
-
 static int	wait_loop(t_interpipe *command, int *ret, int pid)
 {
   int		status;
@@ -65,6 +39,21 @@ static int	wait_loop(t_interpipe *command, int *ret, int pid)
       if ((status = check_status(pid, ret)))
 	return (status);
     }
+  return (0);
+}
+
+static int	process_not_builtin(int *pid, t_command *and_or,
+				    int **fildes, t_datas *data)
+{
+  if ((pid[I] = fork()) == -1)
+    return (my_int_perror("Error while using fork function.\n", -1));
+  if (pid[I] == 0 && pipe_fd(and_or, fildes, I) == -1)
+    return (-1);
+  if (pid[I] == 0)
+    exit(do_instruction(and_or, I, data));
+  if ((and_or->command[I]->pipe && close(fildes[I][1]) == -1) ||
+      (and_or->command[I]->prev && close(fildes[I - 1][0]) == -1))
+    return (my_int_perror("Error while using close function.\n", -1));
   return (0);
 }
 
@@ -80,23 +69,15 @@ static int	execute_loop(t_command *and_or,
     return (my_int_perror("Error while using pipe function.\n", -1));
   while (--i >= 0)
     {
+      data->tmp = i;
       if (and_or->command[i]->prev && i < and_or->pipe_nbr &&
 	  pipe(fildes[i - 1]) == -1)
 	return (my_int_perror("Error while using pipe function.\n", -1));
       if (is_builtin(and_or->command[i], 0) == 1)
 	ret = exec_builtins(and_or->command[i]->args, &data->env, data);
       else if (is_builtin(and_or->command[i], 0) != 1)
-	{
-	  if ((pid[i] = fork()) == -1)
-	    return (my_int_perror("Error while using fork function.\n", -1));
-	  if (pid[i] == 0 && pipe_fd(and_or, fildes, i) == -1)
-	    return (-1);
-	  if (pid[i] == 0)
-	    exit(do_instruction(and_or, i, data));
-	  if ((and_or->command[i]->pipe && close(fildes[i][1]) == -1) ||
-	      (and_or->command[i]->prev && close(fildes[i - 1][0]) == -1))
-	    return (my_int_perror("Error while using close function.\n", -1));
-	}
+	if (process_not_builtin(pid, and_or, fildes, data) == -1)
+	  return (-1);
     }
   while (++i <= and_or->pipe_nbr)
     if (wait_loop(and_or->command[i], &ret, pid[i]) == -1)
