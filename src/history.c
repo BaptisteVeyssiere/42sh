@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Mon May 30 17:11:16 2016 vigner_g
-** Last update Sat Jun  4 14:20:54 2016 vigner_g
+** Last update Sat Jun  4 17:49:16 2016 vigner_g
 */
 
 #include	<stdlib.h>
@@ -52,11 +52,14 @@ int		get_file_descriptor(char *home, char *profile, char *type)
   return (fd);
 }
 
-int		save_in_file(int fd, char *command)
+int		save_in_file(t_datas *data, char *command)
 {
-  if (write(fd, command, my_strlen(command)) != my_strlen(command) ||
-      write(fd, "\n", 1) != 1)
-    return (my_int_perror("save_in_file failed\n", -1));
+  if (data->env != NULL && data->fd != -1)
+    {
+      if (write(data->fd, command, my_strlen(command)) != my_strlen(command) ||
+	  write(data->fd, "\n", 1) != 1)
+	return (my_int_perror("save_in_file failed\n", -1));
+    }
   return (0);
 }
 
