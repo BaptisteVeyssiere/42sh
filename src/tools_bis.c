@@ -5,8 +5,11 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 01:33:29 2016 Baptiste veyssiere
-** Last update Mon May 30 16:56:40 2016 Baptiste veyssiere
+** Last update Sat Jun  4 17:04:35 2016 Baptiste veyssiere
 */
+
+#include <unistd.h>
+#include "mysh.h"
 
 int	my_tablen(char **tab)
 {

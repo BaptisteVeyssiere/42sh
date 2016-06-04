@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Wed Jun  1 19:37:00 2016 Baptiste veyssiere
+** Last update Sat Jun  4 16:59:08 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -31,7 +31,7 @@ static int	close_files(t_interpipe **command)
   return (0);
 }
 
-static int	execute_and_or(t_command *and_or, char ***env)
+static int	execute_and_or(t_command *and_or, char ***env, int old_ret)
 {
   int		ret;
 
@@ -41,6 +41,8 @@ static int	execute_and_or(t_command *and_or, char ***env)
     return (1);
   if ((ret = check_and_add_path(and_or->command, *env)))
     return (ret);
+  if (check_var(and_or->command, *env, old_ret) == -1)
+    return ((ret = 1));
   ret = execute_interpipe(and_or, env);
   if (close_files(and_or->command) == -1)
     return (-1);
@@ -49,6 +51,7 @@ static int	execute_and_or(t_command *and_or, char ***env)
 
 static int	execute_subtree(t_command **and_or, char ***env)
 {
+  static int	old_ret = 0;
   char		ret;
   int		i;
 
@@ -63,8 +66,9 @@ static int	execute_subtree(t_command **and_or, char ***env)
 	  (!ret && and_or[i]->and == 1) ||
 	  (ret && and_or[i]->or == 1))
 	{
-	  if ((ret = execute_and_or(and_or[i], env)) == -1)
+	  if ((ret = execute_and_or(and_or[i], env, old_ret)) == -1)
 	    return (-1);
+	  old_ret = ret;
 	}
     }
   return (ret);

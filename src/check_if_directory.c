@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 23:49:50 2016 Baptiste veyssiere
-** Last update Wed Jun  1 09:14:19 2016 Baptiste veyssiere
+** Last update Thu Jun  2 12:18:37 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -90,14 +90,21 @@ int	check_varenv_name(char *name)
   int	i;
 
   i = -1;
+  if (name[0] < 'A' ||
+      (name[0] > 'Z' && name[0] < 'a') ||
+      name[0] > 'z')
+    {
+      if (my_int_perror("setenv: Variable name must begin", 0))
+	return (-1);
+      return (my_int_perror(" with a letter.\n", 1));
+    }
   while (name[++i])
     if (name[i] < '0' ||
 	(name[i] > '9' && name[i] < 'A') ||
 	(name[i] > 'Z' && name[i] < 'a') ||
 	name[i] > 'z')
       {
-	if (write(2, name, my_strlen(name)) == -1 ||
-	    my_int_perror(": Variable name must contain", 0))
+	if (my_int_perror("setenv: Variable name must contain", 0))
 	  return (-1);
 	return (my_int_perror(" alphanumeric characters.\n", 1));
       }
