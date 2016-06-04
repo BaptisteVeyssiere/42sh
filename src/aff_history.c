@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Thu Jun  2 11:30:25 2016 vigner_g
-** Last update Fri Jun  3 19:03:32 2016 vigner_g
+** Last update Sat Jun  4 14:31:31 2016 vigner_g
 */
 
 #include	<stdio.h>
@@ -22,7 +22,6 @@ int		ret_history(t_history *history, char *str)
   str += 1;
   i = 1;
   tmp = history;
-  printf("DANS LE RET HISTORY!!!!\n");
   if (str != 0)
     {
       nb = my_getnbr(str);
