@@ -5,11 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-<<<<<<< HEAD
-** Last update Sun Jun  5 00:15:34 2016 vigner_g
-=======
-** Last update Sat Jun  4 19:40:11 2016 Baptiste veyssiere
->>>>>>> 62ef2c06a1d62aa9765af6d939e8b1107112a673
+** Last update Sun Jun  5 00:55:58 2016 vigner_g
 */
 
 #include <sys/wait.h>
@@ -78,7 +74,7 @@ static int	execute_loop(t_command *and_or,
 	  pipe(fildes[i - 1]) == -1)
 	return (my_int_perror("Error while using pipe function.\n", -1));
       if (is_builtin(and_or->command[i], 0) == 1)
-	ret = exec_builtins(and_or->command[i]->args, &data->env, data);
+	  ret = exec_builtins(and_or->command[i]->args, &data->env, data);
       else if (is_builtin(and_or->command[i], 0) != 1)
 	if (process_not_builtin(pid, and_or, fildes, data) == -1)
 	  return (-1);

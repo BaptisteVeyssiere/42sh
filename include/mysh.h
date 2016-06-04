@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 00:52:14 2016 vigner_g
+** Last update Sun Jun  5 00:57:56 2016 vigner_g
 */
 
 #ifndef MYSH_H_
@@ -71,6 +71,14 @@ typedef struct		s_history
   struct s_history	*prev;
 }			t_history;
 
+typedef struct		s_alias
+{
+  int			source;
+  char			*alias;
+  char			*equivalent;
+  struct s_alias        *next;
+}			t_alias;
+
 typedef struct		s_datas
 {
   char			*home;
@@ -79,6 +87,7 @@ typedef struct		s_datas
   int			fd;
   t_history		*history;
   int			tmp;
+  t_alias		*alias;
 }			t_datas;
 
 typedef struct		s_tree
@@ -320,6 +329,12 @@ char	*my_getstr(int);
 ** check_status.c
 */
 int	check_status(int pid, int *ret);
+
+/*
+** alias.c
+*/
+t_alias	*load_alias(char *, char **, t_alias *);
+char	*replace_by_alias(char *, t_alias *);
 
 /*
 ** get_dir.c

@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Mon May 30 17:11:16 2016 vigner_g
-** Last update Sun Jun  5 00:47:04 2016 vigner_g
+** Last update Sun Jun  5 00:59:07 2016 vigner_g
 */
 
 #include	<stdlib.h>
@@ -54,7 +54,8 @@ int		get_file_descriptor(char *home, char *profile, char *type)
 
 int		save_in_file(t_datas *data, char *command)
 {
-  if (data->env != NULL && data->fd != -1 && command[0] != 0 && command[0] != '!')
+  if (data->env != NULL && data->fd != -1 && command[0] != 0 &&
+      command[0] != '!')
     {
       if (write(data->fd, command, my_strlen(command)) != my_strlen(command) ||
 	  write(data->fd, "\n", 1) != 1)

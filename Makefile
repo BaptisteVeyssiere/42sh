@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Sun Jun  5 00:53:06 2016 vigner_g
+## Last update Sun Jun  5 00:57:12 2016 vigner_g
 ##
 
 NAME	= 42sh
@@ -22,6 +22,7 @@ SRC	= src/main.c \
 	src/tools.c \
 	src/free_tools.c \
 	src/epure_str.c \
+	src/alias.c \
 	src/execute_command.c \
 	src/get_and_or_tree.c \
 	src/get_interpipe_tree.c \
@@ -68,7 +69,7 @@ OBJDIR	= obj
 
 OBJ	= $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-CFLAGS	= -W -Wextra -Wall -ansi -pedantic -Iinclude
+CFLAGS	= -W -Wextra -Wall -ansi -pedantic -Iinclude -g
 
 $(NAME): $(OBJ)
 	@$(CC) -o $(NAME) $(OBJ)

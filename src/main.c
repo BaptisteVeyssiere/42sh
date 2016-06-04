@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Sun Jun  5 00:42:58 2016 vigner_g
+** Last update Sun Jun  5 00:55:29 2016 vigner_g
 */
 
 #include	<stdlib.h>
@@ -32,6 +32,7 @@ static int	my_shell(char **env_tmp)
   int		ret;
 
   data.history = NULL;
+  data.alias = load_alias(NULL, env_tmp, NULL);
   if (clone_env(env_tmp, &data) == -1 || (prompt = get_prompt()) == NULL ||
       aff_prompt(prompt) == -1)
       return (-1);
@@ -45,8 +46,7 @@ static int	my_shell(char **env_tmp)
 	return (-1);
       free(command);
       free_prompt(prompt);
-      if (!(prompt = get_prompt()) ||
-	  aff_prompt(prompt) == -1)
+      if (!(prompt = get_prompt()) || aff_prompt(prompt) == -1)
 	return (-1);
     }
   free_all(&data, prompt);

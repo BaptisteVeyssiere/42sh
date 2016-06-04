@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:30:53 2016 Baptiste veyssiere
-** Last update Sat Jun  4 16:58:15 2016 vigner_g
+** Last update Sun Jun  5 02:33:30 2016 Nathan Scutari
 */
 
 #include <unistd.h>
@@ -20,7 +20,8 @@ void	free_tab(char **tab)
   if (tab == NULL)
     return ;
   while (tab[++i])
-    free(tab[i]);
+    if (tab[i])
+      free(tab[i]);
   free(tab);
 }
 

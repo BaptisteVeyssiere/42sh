@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 02:01:39 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:54:25 2016 vigner_g
+** Last update Sun Jun  5 02:17:00 2016 Nathan Scutari
 */
 
 #include	<unistd.h>
@@ -18,6 +18,7 @@ static int	check_mode_a(t_interpipe *command)
       my_strcmp_strict(command->args[0], "exit") ||
       my_strcmp_strict(command->args[0], "profile") ||
       my_strcmp_strict(command->args[0], "history") ||
+      my_strcmp_strict(command->args[0], "source") ||
       (strncmp(command->args[0], "!", 1)) == 0 ||
       (my_strcmp_strict(command->args[0], "setenv") &&
        command->args[1]) ||
@@ -32,6 +33,7 @@ static int	check_mode_b(t_interpipe *command)
       !my_strcmp_strict(command->args[0], "exit") &&
       !my_strcmp_strict(command->args[0], "profile") &&
       !my_strcmp_strict(command->args[0], "history") &&
+      !my_strcmp_strict(command->args[0], "source") &&
       (strncmp(command->args[0], "!", 1)) != 0 &&
       (!my_strcmp_strict(command->args[0], "setenv") ||
        (my_strcmp_strict(command->args[0], "setenv") && !(command->args[1]))) &&
@@ -82,6 +84,8 @@ int		exec_builtins(char **args, char ***env, t_datas *data)
   i = -1;
   if (args[0] != NULL && data->fd != -1 && my_strcmp_strict(args[0], "profile"))
     profile(args, data);
+  else if (args[0] != NULL && my_strcmp_strict(args[0], "source"))
+    data->alias = load_alias(args[1], *env, data->alias);
   else if (args[0] != NULL && my_strcmp_strict(args[0], "history"))
     aff_history(data->history);
   else if (args[0] != NULL && strncmp(args[0], "!", 1) == 0)
