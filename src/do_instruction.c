@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:43:17 2016 Baptiste veyssiere
-** Last update Fri Jun  3 10:37:24 2016 Baptiste veyssiere
+** Last update Sat Jun  4 17:17:13 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -35,14 +35,14 @@ static int	change_fd_on(int *fd_input, int *fd_output,
 }
 
 static int	exec_instruction(char if_builtin,
-				 t_interpipe *command, char ***env)
+				 t_interpipe *command, char ***env, t_datas *data)
 {
   int		ret;
 
   if (if_builtin)
     {
-      if ((ret = exec_builtins(command->args, env)))
-	return (ret);
+	if ((ret = exec_builtins(command->args, env, data)))
+	  return (ret);
       exit (EXIT_SUCCESS);
     }
   else if (execve(command->args[0],
@@ -56,7 +56,7 @@ static int	exec_instruction(char if_builtin,
   return (EXIT_SUCCESS);
 }
 
-int	do_instruction(t_command *and_or, char ***env, int i)
+int	do_instruction(t_command *and_or, char ***env, int i, t_datas *data)
 {
   char  builtin;
   int   fd_input;
@@ -75,5 +75,5 @@ int	do_instruction(t_command *and_or, char ***env, int i)
       (my_strcmp_strict(and_or->command[i]->args[0], "setenv") &&
        !(and_or->command[i]->args[1])))
     builtin = 1;
-  return (exec_instruction(builtin, and_or->command[i], env));
+  return (exec_instruction(builtin, and_or->command[i], env, data));
 }

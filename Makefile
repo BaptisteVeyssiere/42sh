@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Sat Jun  4 16:55:20 2016 Baptiste veyssiere
+## Last update Sat Jun  4 17:17:49 2016 Baptiste veyssiere
 ##
 
 NAME	= 42sh
@@ -49,6 +49,9 @@ SRC	= src/main.c \
 	src/exit.c \
 	src/cd.c \
 	src/tools_bis.c \
+	src/history.c	\
+	src/profiles.c	\
+	src/aff_history.c	\
 	src/check_if_directory.c \
 	src/verif_command.c \
 	src/check_command.c \
@@ -62,7 +65,7 @@ OBJDIR	= obj
 
 OBJ	= $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-CFLAGS	= -W -Werror -Wextra -Wall -ansi -pedantic -Iinclude -g
+CFLAGS	= -W -Wextra -Wall -ansi -pedantic -Iinclude -g
 
 $(NAME): $(OBJ)
 	@$(CC) -o $(NAME) $(OBJ)

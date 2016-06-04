@@ -5,11 +5,41 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 01:33:29 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:04:35 2016 Baptiste veyssiere
+** Last update Sat Jun  4 17:10:04 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
+#include <stdlib.h>
 #include "mysh.h"
+
+int	my_strcat(char *to, char *from)
+{
+  int	i;
+  int	j;
+
+  i = -1;
+  j = -1;
+  while (to[++i] != 0);
+  while (from[++j] != 0)
+    {
+      to[i] = from[j];
+      i += 1;
+    }
+  return (0);
+}
+
+char	*my_malloc(int size)
+{
+  char	*ret;
+  int	i;
+
+  i = -1;
+  if ((ret = malloc(size)) == NULL)
+    return (NULL);
+  while (++i < size)
+    ret[i] = 0;
+  return (ret);
+}
 
 int	my_tablen(char **tab)
 {

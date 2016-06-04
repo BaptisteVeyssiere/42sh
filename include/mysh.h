@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:04:44 2016 Baptiste veyssiere
+** Last update Sat Jun  4 17:17:34 2016 Baptiste veyssiere
 */
 
 #ifndef MYSH_H_
@@ -41,33 +41,56 @@ typedef struct	s_counter
 
 typedef struct	s_interpipe
 {
-  int		fd_input;
-  char		*input_file;
-  int		fd_output;
-  char		*output_file;
-  char		left_red;
-  char		right_red;
-  char		if_double_left;
-  char		if_double_right;
-  char		pipe;
-  char		prev;
-  char		*str;
-  char		**args;
-}		t_interpipe;
+  int			fd_input;
+  char			*input_file;
+  int			fd_output;
+  char			*output_file;
+  char			left_red;
+  char			right_red;
+  char			if_double_left;
+  char			if_double_right;
+  char			pipe;
+  char			prev;
+  char			*str;
+  char			**args;
+}			t_interpipe;
 
-typedef struct	s_command
+typedef struct		s_command
 {
-  int		pipe_nbr;
-  char		and;
-  char		or;
-  t_interpipe	**command;
-}		t_command;
+  int			pipe_nbr;
+  char			and;
+  char			or;
+  t_interpipe		**command;
+}			t_command;
 
-typedef struct	s_tree
+typedef struct		s_alias
 {
-  t_command	**and_or;
-  int		and_or_nbr;
-}		t_tree;
+  char			**from;
+  char			**to;
+  struct s_alias	*next;
+}			t_alias;
+
+typedef struct		s_history
+{
+  char			*command;
+  struct s_history	*next;
+  struct s_history	*prev;
+}			t_history;
+
+typedef struct		s_datas
+{
+  char			*home;
+  char			*profile;
+  int			fd;
+  t_history		*history;
+  t_alias		*alias;
+}			t_datas;
+
+typedef struct		s_tree
+{
+  t_command		**and_or;
+  int			and_or_nbr;
+}			t_tree;
 
 /*
 ** free_tools.c
@@ -94,7 +117,7 @@ int	command_not_found(char*);
 /*
 ** execute_command.c
 */
-int	execute_command(char*, char***);
+int	execute_command(t_datas *, char*, char***);
 
 /*
 ** get_tree.c
@@ -184,12 +207,12 @@ int	open_fd(t_interpipe**);
 /*
 ** execute_interpipe.c
 */
-int	execute_interpipe(t_command*, char***);
+int	execute_interpipe(t_command*, char***, t_datas *);
 
 /*
 ** do_instruction.c
 */
-int	do_instruction(t_command*, char***, int);
+int	do_instruction(t_command*, char***, int, t_datas *);
 
 /*
 ** double_left_red.c
@@ -199,7 +222,7 @@ int     double_left_red(t_interpipe*);
 /*
 ** builtins.c
 */
-int	exec_builtins(char**, char***);
+int	exec_builtins(char**, char***, t_datas *);
 int	is_builtin(t_interpipe*, int);
 
 /*
@@ -237,6 +260,28 @@ int	cd_builtin(char***, char**);
 */
 int	my_tablen(char**);
 int	my_getnbr(char*);
+int	my_strcat(char *, char *);
+char	*my_malloc(int);
+
+/*
+** history.c
+*/
+t_history	*load_history(t_datas *, char *, char *, t_history *);
+int		save_in_file(int, char *);
+t_history	*add_a_command(t_history *, char *);
+int		get_file_descriptor(char *, char *, char *);
+int		free_history(t_history *);
+
+/*
+** profiles.c
+*/
+int		profile(char **, t_datas *);
+
+/*
+** aff_history.c
+*/
+int		aff_history(t_history *);
+int		ret_history(t_history *, char *);
 
 /*
 ** check_if_directory.c
