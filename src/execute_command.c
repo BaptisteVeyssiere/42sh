@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:09:37 2016 Baptiste veyssiere
+** Last update Sat Jun  4 18:33:55 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -94,12 +94,6 @@ static int	execute_tree(t_tree **tree, t_datas *data)
   return (error);
 }
 
-static int	free_and_ret(char *command)
-{
-  free(command);
-  return (0);
-}
-
 int		execute_command(t_datas *data, char *str)
 {
   char		*command;
@@ -111,11 +105,13 @@ int		execute_command(t_datas *data, char *str)
   if ((error = check_command(command)))
     return (error);
   if (!command[0])
-    return (free_and_ret(command));
+    {
+      free(command);
+      return (0);
+    }
   if ((data->history = add_a_command(data->history, command)) == NULL ||
       save_in_file(data, command) == -1)
     return (-1);
-  tree = NULL;
   if ((error = get_tree(&tree, command)) == -1)
     return (-1);
   if (error == 1)

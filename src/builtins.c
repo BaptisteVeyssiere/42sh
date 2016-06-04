@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 02:01:39 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:50:37 2016 vigner_g
+** Last update Sat Jun  4 18:54:25 2016 vigner_g
 */
 
 #include	<unistd.h>
@@ -55,18 +55,20 @@ int		is_builtin(t_interpipe *command, int mode)
   return (0);
 }
 
+static void	create_func_ptr(int (*ptr[7])(char***, char**))
+{
+  ptr[0] = &(cd_builtin);
+  ptr[1] = &(env_builtin);
+  ptr[2] = &(setenv_builtin);
+  ptr[3] = &(unsetenv_builtin);
+  ptr[4] = &(exit_builtin);
+  ptr[5] = &(echo_builtin);
+  ptr[6] = NULL;
+}
+
 int		exec_builtins(char **args, char ***env, t_datas *data)
 {
-  int	(*ptr[7])(char***, char**) =
-    {
-      cd_builtin,
-      env_builtin,
-      setenv_builtin,
-      unsetenv_builtin,
-      exit_builtin,
-      echo_builtin,
-      NULL
-    };
+  int	(*ptr[7])(char***, char**);
   char	*name[7];
   int	i;
 
@@ -76,6 +78,7 @@ int		exec_builtins(char **args, char ***env, t_datas *data)
   name[3] = "unsetenv";
   name[4] = "exit";
   name[5] = "echo";
+  create_func_ptr(ptr);
   i = -1;
   if (args[0] != NULL && data->fd != -1 && my_strcmp_strict(args[0], "profile"))
     profile(args, data);

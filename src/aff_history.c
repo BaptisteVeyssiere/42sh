@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Thu Jun  2 11:30:25 2016 vigner_g
-** Last update Sat Jun  4 18:50:10 2016 vigner_g
+** Last update Sat Jun  4 19:00:46 2016 vigner_g
 */
 
 #include	<stdio.h>
@@ -13,7 +13,7 @@
 #include	<unistd.h>
 #include	"mysh.h"
 
-int		ret_history(t_history *history, char *str)
+int		ret_history(t_datas *data, t_history *history, char *str)
 {
   int		nb;
   int		i;
@@ -32,10 +32,8 @@ int		ret_history(t_history *history, char *str)
 	}
       if (i != nb || tmp == NULL)
 	return (my_int_perror("Event not found\n", 0));
-      execute_command();
-      /* if (write(0, tmp->command, my_strlen(tmp->command)) == -1 || */
-      /* 	  write(0, "\n", 1) == -1) */
-      /* 	return (-1); */
+      if ((execute_command(data, tmp->command)) == -1)
+	return (my_int_perror("Failed to exec function\n", -1));
     }
   return (0);
 }
