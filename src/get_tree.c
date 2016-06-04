@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:18:44 2016 Baptiste veyssiere
-** Last update Wed Jun  1 04:38:16 2016 Baptiste veyssiere
+** Last update Sat Jun  4 18:33:44 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -82,6 +82,7 @@ int	get_tree(t_tree ***tree, char *command)
   char	**tab;
   int	i;
 
+  *tree = NULL;
   semicolon_nbr = get_semicolon_nbr(command);
   if (!(tab = get_command_tab(command, semicolon_nbr)))
     return (-1);

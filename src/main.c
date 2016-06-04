@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:49:06 2016 vigner_g
+** Last update Sat Jun  4 18:16:56 2016 Baptiste veyssiere
 */
 
 #include	<stdlib.h>
@@ -33,7 +33,6 @@ static int	my_shell(char **env_tmp)
 
   data.history = NULL;
   if ((data.home = get_varenv(env_tmp, "HOME")) != NULL)
-    /* return (my_int_perror("get_varenv failed\n", -1)); */
     data.history = load_history(&data, data.home,
 				"default", data.history);
   if (clone_env(env_tmp, &data) == -1 || (prompt = get_prompt()) == NULL ||
