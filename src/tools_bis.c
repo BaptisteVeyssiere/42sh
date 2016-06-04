@@ -5,15 +5,17 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 01:33:29 2016 Baptiste veyssiere
-** Last update Tue May 31 17:52:27 2016 vigner_g
+** Last update Sat Jun  4 17:10:04 2016 Baptiste veyssiere
 */
 
-#include	<stdlib.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include "mysh.h"
 
-int		my_strcat(char *to, char *from)
+int	my_strcat(char *to, char *from)
 {
-  int           i;
-  int           j;
+  int	i;
+  int	j;
 
   i = -1;
   j = -1;
@@ -26,10 +28,10 @@ int		my_strcat(char *to, char *from)
   return (0);
 }
 
-char		*my_malloc(int size)
+char	*my_malloc(int size)
 {
-  char          *ret;
-  int           i;
+  char	*ret;
+  int	i;
 
   i = -1;
   if ((ret = malloc(size)) == NULL)

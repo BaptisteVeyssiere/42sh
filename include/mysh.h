@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:33:52 2016 vigner_g
+** Last update Sat Jun  4 18:51:04 2016 vigner_g
 */
 
 #ifndef MYSH_H_
@@ -16,6 +16,16 @@
 # ifndef WCOREDUMP
 #  define WCOREDUMP(status) ((status) & 0x80)
 # endif /* !WCOREDUMP */
+
+typedef struct	s_var
+{
+  char		*command;
+  char		*tmp;
+  char		*var;
+  int		i;
+  int		n;
+  int		start;
+}		t_var;
 
 typedef struct	s_counter
 {
@@ -273,7 +283,7 @@ int		profile(char **, t_datas *);
 ** aff_history.c
 */
 int		aff_history(t_history *);
-int		ret_history(t_history *, char *);
+int		ret_history(t_datas *, t_history *, char *);
 
 /*
 ** check_if_directory.c
@@ -287,19 +297,29 @@ int	check_permission(char*, char);
 /*
 ** check_command.c
 */
-int	check_command(char *);
+int	check_command(char*);
 
 /*
 ** verif_command.c
 */
-void	change_count_value(char *, t_counter *);
-int	check_pipe_and_args(char *, t_counter *);
-int	check_redir_and_args(char *, t_counter *);
+void	change_count_value(char*, t_counter*);
+int	check_pipe_and_args(char*, t_counter*);
+int	check_redir_and_args(char*, t_counter*);
 int	eof_check(t_counter *);
 
 /*
 ** match.c
 */
-int	match(char, char *);
+int	match(char, char*);
+
+/*
+** check_var.c
+*/
+int	check_var(t_interpipe**, char**, int);
+
+/*
+** my_getstr.c
+*/
+char	*my_getstr(int);
 
 #endif /* !MYSH_H_ */

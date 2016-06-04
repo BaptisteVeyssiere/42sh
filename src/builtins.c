@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 02:01:39 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:14:43 2016 vigner_g
+** Last update Sat Jun  4 18:50:37 2016 vigner_g
 */
 
 #include	<unistd.h>
@@ -66,7 +66,7 @@ int		exec_builtins(char **args, char ***env, t_datas *data)
       exit_builtin,
       echo_builtin,
       NULL
-    };/* à déplacer */
+    };
   char	*name[7];
   int	i;
 
@@ -75,14 +75,14 @@ int		exec_builtins(char **args, char ***env, t_datas *data)
   name[2] = "setenv";
   name[3] = "unsetenv";
   name[4] = "exit";
-  name[5] = "echo";/* à déplacer */
+  name[5] = "echo";
   i = -1;
-  if (args[0] != NULL && my_strcmp_strict(args[0], "profile"))
+  if (args[0] != NULL && data->fd != -1 && my_strcmp_strict(args[0], "profile"))
     profile(args, data);
   else if (args[0] != NULL && my_strcmp_strict(args[0], "history"))
     aff_history(data->history);
   else if (args[0] != NULL && strncmp(args[0], "!", 1) == 0)
-    ret_history(data->history, args[0]);
+    ret_history(data, data->history, args[0]);
   while (++i < 6 && !my_strcmp_strict(name[i], args[0]));
   if (i == 6)
     return (1);

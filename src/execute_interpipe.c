@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:25:08 2016 vigner_g
+** Last update Sat Jun  4 18:10:29 2016 Baptiste veyssiere
 */
 
 #include <sys/wait.h>
@@ -15,23 +15,12 @@
 
 static int	pipe_fd(t_command *command, int **fildes, int i)
 {
-  int		j;
-  int		k;
-
-  j = -1;
-  while (++j < command->pipe_nbr)
-    {
-      k = -1;
-      while (++k < 2)
-        if ((command->command[i]->pipe == 0 || (j != i || k != 1)) &&
-            (command->command[i]->prev == 0 || (j != (i - 1) || k != 0)))
-          if (close(fildes[j][k]) == -1)
-            return (-1);
-    }
   if (command->command[i]->prev)
     {
       if (dup2(fildes[i - 1][0], 0) == -1)
 	return (my_int_perror("Error while using dup2 function.\n", -1));
+      if (close(fildes[i - 1][1]) == -1)
+	return (-1);
     }
   if (command->command[i]->pipe)
     {
@@ -68,20 +57,15 @@ static int	check_status(int pid, int *ret)
 }
 
 static int	wait_loop(t_interpipe *command, int *ret,
-			  int **fildes, int *pid, int i)
+			  int **fildes, int pid)
 {
   int		status;
 
+  fildes = fildes;
   if (is_builtin(command, 1) == 1)
     {
-      if ((status = check_status(pid[i], ret)))
+      if ((status = check_status(pid, ret)))
 	return (status);
-      if (command->pipe &&
-          close(fildes[i][1]) == -1)
-        return (my_int_perror("Error while using close function.\n", -1));
-      if (command->prev &&
-          close(fildes[i - 1][0]) == -1)
-        return (my_int_perror("Error while using close function.\n", -1));
     }
   return (0);
 }
@@ -95,24 +79,34 @@ static int	execute_loop(t_command *and_or,
   i = 0;
   ret = 0;
   while (++i <= and_or->pipe_nbr)
-    if (pipe(fildes[i - 1]) == -1)
+    if (i == and_or->pipe_nbr && pipe(fildes[i - 1]) == -1)
       return (my_int_perror("Error while using pipe function.\n", -1));
   while (--i >= 0)
-    if (is_builtin(and_or->command[i], 0) == 1)
-      ret = exec_builtins(and_or->command[i]->args, &data->env, data);
-    else if (is_builtin(and_or->command[i], 0) != 1)
-      {
-	if ((pid[i] = fork()) == -1)
-	  return (my_int_perror("Error while using fork function.\n", -1));
-	if (pid[i] == 0)
-	  {
-	    if (pipe_fd(and_or, fildes, i) == -1)
-	      return (-1);
-	    return (do_instruction(and_or, i, data));
-	  }
-      }
+    {
+      if (and_or->command[i]->prev && i < and_or->pipe_nbr && pipe(fildes[i - 1]) == -1)
+	return (my_int_perror("Error while using pipe function.\n", -1));
+      if (is_builtin(and_or->command[i], 0) == 1)
+	ret = exec_builtins(and_or->command[i]->args, &data->env, data);
+      else if (is_builtin(and_or->command[i], 0) != 1)
+	{
+	  if ((pid[i] = fork()) == -1)
+	    return (my_int_perror("Error while using fork function.\n", -1));
+	  if (pid[i] == 0)
+	    {
+	      if (pipe_fd(and_or, fildes, i) == -1)
+		return (-1);
+	      exit(do_instruction(and_or, i, data));
+	    }
+	  if (and_or->command[i]->pipe &&
+	      close(fildes[i][1]) == -1)
+	    return (my_int_perror("Error while using close function.\n", -1));
+	  if (and_or->command[i]->prev &&
+	      close(fildes[i - 1][0]) == -1)
+	    return (my_int_perror("Error while using close function.\n", -1));
+	}
+    }
   while (++i <= and_or->pipe_nbr)
-    if (wait_loop(and_or->command[i], &ret, fildes, pid, i) == -1)
+    if (wait_loop(and_or->command[i], &ret, fildes, pid[i]) == -1)
       return (-1);
   return (ret);
 }

@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 00:11:16 2016 Baptiste veyssiere
-** Last update Thu Jun  2 12:32:13 2016 vigner_g
+** Last update Sat Jun  4 17:12:09 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -40,12 +40,12 @@ static int	get_redirect_length(char *str, int i)
   return (length);
 }
 
-char		*get_redirect_name(char *str, char mode)
+char	*get_redirect_name(char *str, char mode)
 {
-  int		i;
-  int		j;
-  int		length;
-  char		*name;
+  int	i;
+  int	j;
+  int	length;
+  char	*name;
 
   i = -1;
   while (str[++i] && str[i] != mode);
@@ -66,7 +66,7 @@ char		*get_redirect_name(char *str, char mode)
   return (name);
 }
 
-int		get_redirect_files(t_interpipe *interpipe, char *command)
+int	get_redirect_files(t_interpipe *interpipe, char *command)
 {
   get_redirect_type(interpipe, command);
   if (((interpipe->left_red || interpipe->if_double_left) &&

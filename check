@@ -1,10 +1,4 @@
 1:
-Enlever les | cat inutiles
+Faire le jobcontrol (ctrl-c, ctrl-z, ctrl-l)
 2:
-rsc/notc: Exec format error. Binary file not executable.
-3:
-Remplacer les $VAR par les variables d'environnement
-4:
-Faire le jobcontrol
-5:
 ncurses pour pouvoir revenir dans la chaine de caractere

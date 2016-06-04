@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 21:38:00 2016 Baptiste veyssiere
-** Last update Fri Jun  3 18:21:27 2016 vigner_g
+** Last update Sat Jun  4 18:01:38 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -85,7 +85,7 @@ static int	add_path(char **command, char **env)
   if (env == NULL || (path = get_varenv(env, "PATH")) == NULL)
     {
       path = NULL;
-      if (!(path = malloc(my_strlen("/bin"))))
+      if (!(path = malloc(my_strlen("/bin") + 1)))
         return (-1);
       path[my_strlen("/bin")] = 0;
       my_strcpy("/bin", path);

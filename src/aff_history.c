@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Thu Jun  2 11:30:25 2016 vigner_g
-** Last update Sat Jun  4 14:31:31 2016 vigner_g
+** Last update Sat Jun  4 18:50:10 2016 vigner_g
 */
 
 #include	<stdio.h>
@@ -32,9 +32,10 @@ int		ret_history(t_history *history, char *str)
 	}
       if (i != nb || tmp == NULL)
 	return (my_int_perror("Event not found\n", 0));
-      if (write(0, tmp->command, my_strlen(tmp->command)) == -1 ||
-	  write(0, "\n", 1) == -1)
-	return (-1);
+      execute_command();
+      /* if (write(0, tmp->command, my_strlen(tmp->command)) == -1 || */
+      /* 	  write(0, "\n", 1) == -1) */
+      /* 	return (-1); */
     }
   return (0);
 }

@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:43:17 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:27:13 2016 vigner_g
+** Last update Sat Jun  4 18:09:08 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -47,7 +47,12 @@ static int	exec_instruction(char if_builtin,
     }
   else if (execve(command->args[0],
 		  command->args, data->env) == -1)
-    exit(EXIT_FAILURE);
+    {
+      if (my_int_perror(command->args[0], 0) ||
+	  my_int_perror(": Exec format error. Binary file not executable.\n", 0))
+	exit(-1);
+      exit(1);
+    }
   return (EXIT_SUCCESS);
 }
 
