@@ -5,12 +5,40 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Thu Jun  2 11:30:25 2016 vigner_g
-** Last update Thu Jun  2 11:53:34 2016 vigner_g
+** Last update Fri Jun  3 19:03:32 2016 vigner_g
 */
 
 #include	<stdio.h>
 #include	<stdlib.h>
+#include	<unistd.h>
 #include	"mysh.h"
+
+int		ret_history(t_history *history, char *str)
+{
+  int		nb;
+  int		i;
+  t_history	*tmp;
+
+  str += 1;
+  i = 1;
+  tmp = history;
+  printf("DANS LE RET HISTORY!!!!\n");
+  if (str != 0)
+    {
+      nb = my_getnbr(str);
+      while (tmp != NULL && i != nb)
+	{
+	  tmp = tmp->next;
+	  i += 1;
+	}
+      if (i != nb || tmp == NULL)
+	return (my_int_perror("Event not found\n", 0));
+      if (write(0, tmp->command, my_strlen(tmp->command)) == -1 ||
+	  write(0, "\n", 1) == -1)
+	return (-1);
+    }
+  return (0);
+}
 
 int		aff_history(t_history *history)
 {

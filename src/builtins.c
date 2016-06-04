@@ -5,10 +5,11 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 02:01:39 2016 Baptiste veyssiere
-** Last update Fri Jun  3 16:55:07 2016 vigner_g
+** Last update Sat Jun  4 14:28:42 2016 vigner_g
 */
 
 #include	<unistd.h>
+#include	<string.h>
 #include	"mysh.h"
 
 static int	check_mode_a(t_interpipe *command)
@@ -17,6 +18,7 @@ static int	check_mode_a(t_interpipe *command)
       my_strcmp_strict(command->args[0], "exit") ||
       my_strcmp_strict(command->args[0], "profile") ||
       my_strcmp_strict(command->args[0], "history") ||
+      (strncmp(command->args[0], "!", 1)) == 0 ||
       (my_strcmp_strict(command->args[0], "setenv") &&
        command->args[1]) ||
       my_strcmp_strict(command->args[0], "unsetenv"))
@@ -29,6 +31,8 @@ static int	check_mode_b(t_interpipe *command)
   if (!my_strcmp_strict(command->args[0], "cd") &&
       !my_strcmp_strict(command->args[0], "exit") &&
       !my_strcmp_strict(command->args[0], "profile") &&
+      !my_strcmp_strict(command->args[0], "history") &&
+      (strncmp(command->args[0], "!", 1)) != 0 &&
       (!my_strcmp_strict(command->args[0], "setenv") ||
        (my_strcmp_strict(command->args[0], "setenv") && !(command->args[1]))) &&
       !my_strcmp_strict(command->args[0], "unsetenv"))
@@ -77,6 +81,8 @@ int		exec_builtins(char **args, char ***env, t_datas *data)
     profile(args, data);
   else if (args[0] != NULL && my_strcmp_strict(args[0], "history"))
     aff_history(data->history);
+  else if (args[0] != NULL && strncmp(args[0], "!", 1) == 0)
+    ret_history(data->history, args[0]);
   while (++i < 6 && !my_strcmp_strict(name[i], args[0]));
   if (i == 6)
     return (1);

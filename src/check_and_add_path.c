@@ -5,11 +5,12 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sat May 28 21:38:00 2016 Baptiste veyssiere
-** Last update Thu Jun  2 12:07:39 2016 vigner_g
+** Last update Fri Jun  3 18:21:27 2016 vigner_g
 */
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include "mysh.h"
 
 static int	check_if_builtin(char *command)
@@ -21,7 +22,8 @@ static int	check_if_builtin(char *command)
       my_strcmp_strict(command, "exit") == 1 ||
       my_strcmp_strict(command, "cd") == 1 ||
       my_strcmp_strict(command, "profile") == 1 ||
-      my_strcmp_strict(command, "history") == 1)
+      my_strcmp_strict(command, "history") == 1 ||
+      (strncmp(command, "!", 1)) == 0)
     return (0);
   return (1);
 }

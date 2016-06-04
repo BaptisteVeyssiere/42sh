@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Thu Jun  2 12:10:11 2016 vigner_g
+** Last update Fri Jun  3 17:19:03 2016 vigner_g
 */
 
 #ifndef MYSH_H_
@@ -271,6 +271,7 @@ int		profile(char **, t_datas *);
 ** aff_history.c
 */
 int		aff_history(t_history *);
+int		ret_history(t_history *, char *);
 
 /*
 ** check_if_directory.c
