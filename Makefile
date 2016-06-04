@@ -5,14 +5,14 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Sun Jun  5 00:13:31 2016 vigner_g
+## Last update Sun Jun  5 00:53:06 2016 vigner_g
 ##
 
 NAME	= 42sh
 
 RM	= rm -f
 
-CC	= gcc -g
+CC	= gcc
 
 MKDIR	= mkdir -p
 
@@ -58,7 +58,9 @@ SRC	= src/main.c \
 	src/match.c \
 	src/check_var.c \
 	src/my_getstr.c	\
-	src/check_status.c
+	src/check_status.c	\
+	src/get_dir.c \
+	src/check_dir_permission.c
 
 SRCDIR	= src
 

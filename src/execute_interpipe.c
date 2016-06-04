@@ -5,7 +5,11 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
+<<<<<<< HEAD
 ** Last update Sun Jun  5 00:15:34 2016 vigner_g
+=======
+** Last update Sat Jun  4 19:40:11 2016 Baptiste veyssiere
+>>>>>>> 62ef2c06a1d62aa9765af6d939e8b1107112a673
 */
 
 #include <sys/wait.h>
