@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:16:43 2016 Baptiste veyssiere
+** Last update Sat Jun  4 18:09:37 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -31,7 +31,7 @@ static int	close_files(t_interpipe **command)
   return (0);
 }
 
-static int	execute_and_or(t_command *and_or, char ***env, int old_ret, t_datas *data)
+static int	execute_and_or(t_command *and_or, int old_ret, t_datas *data)
 {
   int		ret;
 
@@ -39,17 +39,17 @@ static int	execute_and_or(t_command *and_or, char ***env, int old_ret, t_datas *
     return (-1);
   else if (ret == -1)
     return (1);
-  if ((ret = check_and_add_path(and_or->command, *env)))
+  if ((ret = check_and_add_path(and_or->command, data->env)))
     return (ret);
-  if (check_var(and_or->command, *env, old_ret) == -1)
+  if (check_var(and_or->command, data->env, old_ret) == -1)
     return ((ret = 1));
-  ret = execute_interpipe(and_or, env, data);
+  ret = execute_interpipe(and_or, data);
   if (close_files(and_or->command) == -1)
     return (-1);
   return (ret);
 }
 
-static int	execute_subtree(t_command **and_or, char ***env, t_datas *data)
+static int	execute_subtree(t_command **and_or, t_datas *data)
 {
   static int	old_ret = 0;
   char		ret;
@@ -66,7 +66,7 @@ static int	execute_subtree(t_command **and_or, char ***env, t_datas *data)
 	  (!ret && and_or[i]->and == 1) ||
 	  (ret && and_or[i]->or == 1))
 	{
-	  if ((ret = execute_and_or(and_or[i], env, old_ret, data)) == -1)
+	  if ((ret = execute_and_or(and_or[i], old_ret, data)) == -1)
 	    return (-1);
 	  old_ret = ret;
 	}
@@ -74,7 +74,7 @@ static int	execute_subtree(t_command **and_or, char ***env, t_datas *data)
   return (ret);
 }
 
-static int	execute_tree(t_tree **tree, char ***env, t_datas *data)
+static int	execute_tree(t_tree **tree, t_datas *data)
 {
   int		i;
   int		error;
@@ -82,7 +82,7 @@ static int	execute_tree(t_tree **tree, char ***env, t_datas *data)
   i = -1;
   while (tree[++i])
     {
-      error = execute_subtree(tree[i]->and_or, env, data);
+      error = execute_subtree(tree[i]->and_or, data);
       if (error == -1)
 	return (-1);
     }
@@ -100,7 +100,7 @@ static int	free_and_ret(char *command)
   return (0);
 }
 
-int		execute_command(t_datas *data, char *str, char ***env)
+int		execute_command(t_datas *data, char *str)
 {
   char		*command;
   int		error;
@@ -113,7 +113,7 @@ int		execute_command(t_datas *data, char *str, char ***env)
   if (!command[0])
     return (free_and_ret(command));
   if ((data->history = add_a_command(data->history, command)) == NULL ||
-      save_in_file(data->fd, command) == -1)
+      save_in_file(data, command) == -1)
     return (-1);
   tree = NULL;
   if ((error = get_tree(&tree, command)) == -1)
@@ -122,7 +122,7 @@ int		execute_command(t_datas *data, char *str, char ***env)
     return (0);
   if (fill_leaf(tree) == -1)
     return (-1);
-  error = execute_tree(tree, env, data);
+  error = execute_tree(tree, data);
   free_tree(tree);
   return (error);
 }

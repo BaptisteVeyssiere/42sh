@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:30:26 2016 Baptiste veyssiere
+** Last update Sat Jun  4 18:10:29 2016 Baptiste veyssiere
 */
 
 #include <sys/wait.h>
@@ -70,7 +70,7 @@ static int	wait_loop(t_interpipe *command, int *ret,
   return (0);
 }
 
-static int	execute_loop(t_command *and_or, char ***env,
+static int	execute_loop(t_command *and_or,
 			     int **fildes, int *pid, t_datas *data)
 {
   int		i;
@@ -86,7 +86,7 @@ static int	execute_loop(t_command *and_or, char ***env,
       if (and_or->command[i]->prev && i < and_or->pipe_nbr && pipe(fildes[i - 1]) == -1)
 	return (my_int_perror("Error while using pipe function.\n", -1));
       if (is_builtin(and_or->command[i], 0) == 1)
-	ret = exec_builtins(and_or->command[i]->args, env, data);
+	ret = exec_builtins(and_or->command[i]->args, &data->env, data);
       else if (is_builtin(and_or->command[i], 0) != 1)
 	{
 	  if ((pid[i] = fork()) == -1)
@@ -95,7 +95,7 @@ static int	execute_loop(t_command *and_or, char ***env,
 	    {
 	      if (pipe_fd(and_or, fildes, i) == -1)
 		return (-1);
-	      exit(do_instruction(and_or, env, i, data));
+	      exit(do_instruction(and_or, i, data));
 	    }
 	  if (and_or->command[i]->pipe &&
 	      close(fildes[i][1]) == -1)
@@ -111,7 +111,7 @@ static int	execute_loop(t_command *and_or, char ***env,
   return (ret);
 }
 
-int	execute_interpipe(t_command *and_or, char ***env, t_datas *data)
+int	execute_interpipe(t_command *and_or, t_datas *data)
 {
   int	i;
   int   **fildes;
@@ -126,7 +126,7 @@ int	execute_interpipe(t_command *and_or, char ***env, t_datas *data)
   while (++i < and_or->pipe_nbr)
     if ((fildes[i] = malloc(sizeof(int) * 2)) == NULL)
       return (-1);
-  if ((ret = execute_loop(and_or, env, fildes, pid, data)) == -1)
+  if ((ret = execute_loop(and_or, fildes, pid, data)) == -1)
     return (-1);
   if (and_or->pipe_nbr)
     {

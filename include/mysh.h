@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:17:34 2016 Baptiste veyssiere
+** Last update Sat Jun  4 18:09:22 2016 Baptiste veyssiere
 */
 
 #ifndef MYSH_H_
@@ -81,6 +81,7 @@ typedef struct		s_datas
 {
   char			*home;
   char			*profile;
+  char			**env;
   int			fd;
   t_history		*history;
   t_alias		*alias;
@@ -97,6 +98,7 @@ typedef struct		s_tree
 */
 void	free_tab(char**);
 void	free_tree(t_tree**);
+void    free_all(t_datas *, char **);
 
 /*
 ** tools.c
@@ -117,7 +119,7 @@ int	command_not_found(char*);
 /*
 ** execute_command.c
 */
-int	execute_command(t_datas *, char*, char***);
+int	execute_command(t_datas *, char*);
 
 /*
 ** get_tree.c
@@ -207,12 +209,12 @@ int	open_fd(t_interpipe**);
 /*
 ** execute_interpipe.c
 */
-int	execute_interpipe(t_command*, char***, t_datas *);
+int	execute_interpipe(t_command*, t_datas *);
 
 /*
 ** do_instruction.c
 */
-int	do_instruction(t_command*, char***, int, t_datas *);
+int	do_instruction(t_command*, int, t_datas *);
 
 /*
 ** double_left_red.c
@@ -267,7 +269,7 @@ char	*my_malloc(int);
 ** history.c
 */
 t_history	*load_history(t_datas *, char *, char *, t_history *);
-int		save_in_file(int, char *);
+int		save_in_file(t_datas *, char *);
 t_history	*add_a_command(t_history *, char *);
 int		get_file_descriptor(char *, char *, char *);
 int		free_history(t_history *);

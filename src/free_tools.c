@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:30:53 2016 Baptiste veyssiere
-** Last update Sat May 28 19:29:07 2016 Baptiste veyssiere
+** Last update Sat Jun  4 16:58:15 2016 vigner_g
 */
 
 #include <unistd.h>
@@ -57,4 +57,13 @@ void	free_tree(t_tree **tree)
       free(tree[i]);
     }
   free(tree);
+}
+
+void	free_all(t_datas *data, char **prompt)
+{
+  free_prompt(prompt);
+  free_history(data->history);
+  close(data->fd);
+  free(data->home);
+  free_env(data->env);
 }
