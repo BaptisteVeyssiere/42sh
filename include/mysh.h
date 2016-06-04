@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:51:04 2016 vigner_g
+** Last update Sun Jun  5 00:40:02 2016 Baptiste veyssiere
 */
 
 #ifndef MYSH_H_
@@ -321,5 +321,15 @@ int	check_var(t_interpipe**, char**, int);
 ** my_getstr.c
 */
 char	*my_getstr(int);
+
+/*
+** get_dir.c
+*/
+char	*my_getdir(char*);
+
+/*
+** get_dir_permission.c
+*/
+int	check_dir_permission(char*, char);
 
 #endif /* !MYSH_H_ */
