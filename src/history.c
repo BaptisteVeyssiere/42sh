@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Mon May 30 17:11:16 2016 vigner_g
-** Last update Sat Jun  4 17:49:16 2016 vigner_g
+** Last update Sun Jun  5 00:59:07 2016 vigner_g
 */
 
 #include	<stdlib.h>
@@ -54,7 +54,8 @@ int		get_file_descriptor(char *home, char *profile, char *type)
 
 int		save_in_file(t_datas *data, char *command)
 {
-  if (data->env != NULL && data->fd != -1)
+  if (data->env != NULL && data->fd != -1 && command[0] != 0 &&
+      command[0] != '!')
     {
       if (write(data->fd, command, my_strlen(command)) != my_strlen(command) ||
 	  write(data->fd, "\n", 1) != 1)
@@ -67,14 +68,17 @@ t_history	*add_a_command(t_history *history, char *command)
 {
   t_history	*new;
 
-  if ((new = malloc(sizeof(t_history))) == NULL)
-    return (NULL);
-  new->prev = NULL;
-  new->next = history;
-  if (history != NULL)
-    history->prev = new;
-  new->command = command;
-  history = new;
+  if (command[0] != 0 && command[0] != '!')
+    {
+      if ((new = malloc(sizeof(t_history))) == NULL)
+	return (NULL);
+      new->prev = NULL;
+      new->next = history;
+      if (history != NULL)
+	history->prev = new;
+      new->command = command;
+      history = new;
+    }
   return (history);
 }
 

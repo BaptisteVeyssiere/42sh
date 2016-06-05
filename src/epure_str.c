@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:52:01 2016 Baptiste veyssiere
-** Last update Sat Jun  4 19:54:28 2016 vigner_g
+** Last update Sun Jun  5 00:38:54 2016 Nathan Scutari
 */
 
 #include <unistd.h>
@@ -17,6 +17,8 @@ static int	get_epure_length(char *str)
   int		length;
   int		i;
 
+  if (!str)
+    return (0);
   length = 0;
   i = -1;
   while (str[++i] && (str[i] == ' ' || str[i] == '\t'));
@@ -40,7 +42,7 @@ char	*epure_str(char *str)
 
   epure = NULL;
   epure_length = get_epure_length(str);
-  if (!(epure = malloc(epure_length + 1)))
+  if (!str || !(epure = malloc(epure_length + 1)))
     return (NULL);
   i = -1;
   while (++i <= epure_length)

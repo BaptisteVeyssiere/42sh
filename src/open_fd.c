@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 00:28:56 2016 Baptiste veyssiere
-** Last update Thu Jun  2 21:03:35 2016 Baptiste veyssiere
+** Last update Sun Jun  5 00:10:50 2016 Baptiste veyssiere
 */
 
 #include <sys/stat.h>
@@ -40,7 +40,7 @@ static int	output_open(char *file, int red_nbr)
   int		fd;
   mode_t	mode;
 
-  if (access(file, F_OK) == 0 && check_permission(file, 'w'))
+  if (check_permission(file, 'w'))
     return (-1);
   mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
   if (red_nbr == 2)

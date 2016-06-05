@@ -5,12 +5,11 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Sun Jun  5 14:07:32 2016 ilyas semmaoui
+** Last update Sun Jun  5 14:31:47 2016 ilyas semmaoui
 */
 
 #include	<stdlib.h>
 #include	<unistd.h>
-#include	<stdio.h>
 #include	<signal.h>
 #include	"mysh.h"
 #include	"get_next_line.h"
@@ -39,12 +38,13 @@ static int	clone_env(char **env_tmp, t_datas *data)
 static int	loading_data(t_datas *data, char **env_tmp, char ***prompt)
 {
   data->history = NULL;
-  if ((data->home = get_varenv(env_tmp, "HOME")) != NULL)
-    data->history = load_history(data, data->home,
-				"default", data->history);
+  data->alias = load_alias(NULL, env_tmp, NULL);
   if (clone_env(env_tmp, data) == -1 || (*prompt = get_prompt()) == NULL ||
       aff_prompt(*prompt) == -1)
-    return (-1);
+      return (-1);
+  if ((data->home = get_varenv(env_tmp, "HOME")) != NULL)
+    data->history = load_history(data, data->home,
+				 "default", data->history);
   return (0);
 }
 
@@ -57,13 +57,6 @@ static int	my_shell(char **env_tmp)
 
   if (loading_data(&data, env_tmp, &prompt) == -1)
     return (-1);
-  /* data.history = NULL; */
-  /* if ((data.home = get_varenv(env_tmp, "HOME")) != NULL) */
-  /*   data.history = load_history(&data, data.home, */
-  /* 				"default", data.history); */
-  /* if (clone_env(env_tmp, &data) == -1 || (prompt = get_prompt()) == NULL || */
-  /*     aff_prompt(prompt) == -1) */
-  /*     return (-1); */
   ret = 0;
   if (signal(SIGINT, &handler) == SIG_ERR)
     return (-1);
@@ -74,8 +67,7 @@ static int	my_shell(char **env_tmp)
 	return (-1);
       free(command);
       free_prompt(prompt);
-      if (!(prompt = get_prompt()) ||
-	  aff_prompt(prompt) == -1)
+      if (!(prompt = get_prompt()) || aff_prompt(prompt) == -1)
 	return (-1);
       ctrlc = 0;
     }

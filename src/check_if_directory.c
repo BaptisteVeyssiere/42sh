@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Mon May 30 23:49:50 2016 Baptiste veyssiere
-** Last update Thu Jun  2 12:18:37 2016 Baptiste veyssiere
+** Last update Sun Jun  5 00:39:54 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -116,6 +116,8 @@ int		check_permission(char *file, char permission)
   struct stat	buf;
   int		check;
 
+  if (check_dir_permission(file, permission))
+    return (1);
   if (access(file, F_OK))
     return (0);
   if (stat(file, &buf) == -1)
@@ -126,7 +128,7 @@ int		check_permission(char *file, char permission)
     check = (S_IWUSR & buf.st_mode);
   else if (permission == 'x')
     check = (S_IXUSR & buf.st_mode);
-  if (!check)
+  if (!check || (permission == 'w' && !(S_IWUSR & buf.st_mode)))
     {
       if (write(2, file, my_strlen(file)) == -1)
         return (-1);
