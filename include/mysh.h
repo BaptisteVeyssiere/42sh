@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 00:57:56 2016 vigner_g
+** Last update Sun Jun  5 03:19:08 2016 Nathan Scutari
 */
 
 #ifndef MYSH_H_
@@ -334,6 +334,18 @@ int	check_status(int pid, int *ret);
 ** alias.c
 */
 t_alias	*load_alias(char *, char **, t_alias *);
+
+/*
+** alias_tools.c
+*/
+int	alias_length(char *);
+char	*copy_str(char *);
+void	free_alias(t_alias *);
+int	cut_alias(char *, int, int, char **);
+
+/*
+** source_command.c
+*/
 char	*replace_by_alias(char *, t_alias *);
 
 /*
