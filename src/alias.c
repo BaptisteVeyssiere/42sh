@@ -5,7 +5,7 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Wed Jun  1 20:29:06 2016 Nathan Scutari
-** Last update Sun Jun  5 11:36:15 2016 vigner_g
+** Last update Sun Jun  5 17:01:32 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -112,7 +112,8 @@ t_alias		*load_alias(char *path, char **env, t_alias *old)
   alias = NULL;
   if (!path && (path = get_home_path(env)) == NULL)
     return (NULL);
-  if ((fd = open(path, O_RDONLY)) == -1)
+  if (my_strcmp_strict("/dev/urandom", path) ||
+      (fd = open(path, O_RDONLY)) == -1)
     return (NULL);
   while ((line = get_next_line(fd)) != NULL)
     {
