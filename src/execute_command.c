@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Sun Jun  5 16:29:13 2016 vigner_g
+** Last update Sun Jun  5 16:38:26 2016 vigner_g
 */
 
 #include <stdlib.h>
@@ -116,8 +116,8 @@ int		execute_command(t_datas *data, char *str)
   if (fill_leaf(tree) == -1)
     return (-1);
   error = execute_tree(tree, data);
-  if ((data->env != NULL) && ((data->history = add_a_command(data->history, command))
-			      == NULL || save_in_file(data, command) == -1))
+  if ((data->env != NULL) && ((data->history = add_a_command(data->history,
+							     command)) == NULL || save_in_file(data, command) == -1))
     return (-1);
   free_tree(tree);
   return (error);
