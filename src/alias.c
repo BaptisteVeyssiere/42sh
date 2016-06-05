@@ -5,7 +5,7 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Wed Jun  1 20:29:06 2016 Nathan Scutari
-** Last update Sun Jun  5 11:31:40 2016 vigner_g
+** Last update Sun Jun  5 11:36:15 2016 vigner_g
 */
 
 #include <unistd.h>
@@ -101,21 +101,6 @@ static void	check_line(char *line, t_alias **list)
   if (line[x])
     return ;
   create_alias(list, alias, equivalent);
-}
-
-<<<<<<< HEAD
-void		free_alias(t_alias *list)
-{
-  t_alias	*tmp;
-
-  while (list)
-    {
-      tmp = list;
-      list = list->next;
-      free(tmp->alias);
-      free(tmp->equivalent);
-      free(tmp);
-    }
 }
 
 t_alias		*load_alias(char *path, char **env, t_alias *old)
