@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 22:39:52 2016 Nathan Scutari
+** Last update Sun Jun  5 22:42:05 2016 Nathan Scutari
 */
 
 #ifndef MYSH_H_
@@ -18,29 +18,33 @@
 #  define WCOREDUMP(status) ((status) & 0x80)
 # endif /* !WCOREDUMP */
 
-typedef struct	s_var
+typedef struct		s_var
 {
-  char		*command;
-  char		*tmp;
-  char		*var;
-  int		i;
-  int		n;
-  int		start;
-}		t_var;
+  char			*command;
+  char			*tmp;
+  char			*var;
+  int			i;
+  int			n;
+  int			start;
+}			t_var;
 
-typedef struct	s_counter
+typedef struct		s_counter
 {
-  int		i;
-  int		redir;
-  int		count;
-  int		pipe;
-  int		key;
-  int		arg;
-  int		except;
-  int		error;
-}		t_counter;
+  int			i;
+  int			redir;
+  int			l_red;
+  int			r_red;
+  int			count;
+  int			pipe;
+  int			l_pipe;
+  int			key;
+  int			arg;
+  int			l_arg;
+  int			except;
+  int			error;
+}			t_counter;
 
-typedef struct	s_interpipe
+typedef struct		s_interpipe
 {
   int			fd_input;
   char			*input_file;
@@ -306,10 +310,9 @@ int	check_command(char*);
 /*
 ** verif_command.c
 */
-void	change_count_value(char*, t_counter*);
+int	change_count_value(char*, t_counter*);
 int	check_pipe_and_args(char*, t_counter*);
 int	check_redir_and_args(char*, t_counter*);
-int	eof_check(t_counter *);
 
 /*
 ** match.c
@@ -368,7 +371,7 @@ void	handler(int);
 ** alias_tools_bis.c
 */
 t_alias		*manage_return(t_alias *, t_alias *, int);
-void	init_var(int *, char **, char **);
-int	free_errors(char *, char *);
+void		init_var(int *, char **, char **);
+int		free_errors(char *, char *);
 
 #endif /* !MYSH_H_ */

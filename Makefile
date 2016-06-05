@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Sun Jun  5 22:40:09 2016 Nathan Scutari
+## Last update Sun Jun  5 22:42:34 2016 Nathan Scutari
 ##
 
 NAME	= 42sh
@@ -72,7 +72,7 @@ OBJDIR	= obj
 
 OBJ	= $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-CFLAGS	= -W -Wextra -Wall -ansi -pedantic -Iinclude -g
+CFLAGS	= -W -Werror -Wextra -Wall -ansi -pedantic -Iinclude
 
 $(NAME): $(OBJ)
 	@$(CC) -o $(NAME) $(OBJ)

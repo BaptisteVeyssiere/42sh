@@ -5,11 +5,32 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Thu May 26 14:52:40 2016 Baptiste veyssiere
-** Last update Wed Jun  1 19:07:41 2016 Baptiste veyssiere
+** Last update Sun Jun  5 18:43:07 2016 ilyas semmaoui
 */
 
 #include <unistd.h>
 #include "mysh.h"
+
+static int		eof_check(t_counter *cnt)
+{
+  if (cnt->redir > 0)
+    return (2);
+  if (cnt->pipe > 0)
+    return (1);
+  if (cnt->except == 1)
+    return (0);
+  if (cnt->count > 0 || (cnt->error == 1 && cnt->arg < 2) ||
+      (cnt->arg == 1 && cnt->redir > 0))
+    return (1);
+  if (cnt->l_arg == 0 && cnt->l_red > 0)
+    return (2);
+  if ((cnt->l_pipe > 0 && cnt->l_red > 0 && cnt->l_arg > 0)
+      || (cnt->l_red > 1 && cnt->l_arg > 0))
+    return (4);
+  if (cnt->r_red > 1 && cnt->l_arg > 0)
+    return (3);
+  return (0);
+}
 
 static void		init_counter(t_counter *cnt)
 {
@@ -21,6 +42,10 @@ static void		init_counter(t_counter *cnt)
   cnt->key = 0;
   cnt->count = 0;
   cnt->except = 0;
+  cnt->l_pipe = 0;
+  cnt->l_arg = 0;
+  cnt->l_red = 0;
+  cnt->r_red = 0;
 }
 
 static int	check_command_loop(char *command)

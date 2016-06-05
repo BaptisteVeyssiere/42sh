@@ -5,29 +5,78 @@
 ** Login   <semmao_i@epitech.net>
 ** 
 ** Started on  Wed Jun  1 18:50:01 2016 ilyas semmaoui
-** Last update Wed Jun  1 18:54:35 2016 ilyas semmaoui
+** Last update Sun Jun  5 18:46:19 2016 ilyas semmaoui
 */
 
 #include "mysh.h"
 
-void	change_count_value(char *command, t_counter *cnt)
+static int	last_check_value(char *command, t_counter *cnt)
+{
+  if (cnt->l_red > 1 && cnt->l_arg > 0)
+    return (4);
+  if (cnt->r_red > 1 && cnt->l_arg > 0)
+    return (3);
+  if (match(command[cnt->i], "><|&;") == 0)
+    cnt->l_arg = 0;
+  return (0);
+}
+
+static int	verif_count_value(char *command, t_counter *cnt)
+{
+  if (match(command[cnt->i], "><|& \t;") == 1 &&
+      (command[cnt->i + 1] == '\0' ||
+       match(command[cnt->i + 1], "><|& \t;") == 0))
+    {
+      cnt->arg += 1;
+      cnt->l_arg += 1;
+    }
+  if (command[cnt->i] == '>')
+    {
+      cnt->key = 1;
+      if (command[cnt->i + 1] != '>')
+	cnt->r_red += 1;
+      if (cnt->r_red > 1 && cnt->l_arg == 0)
+        return (2);
+      cnt->l_arg = 0;
+    }
+  if (command[cnt->i] == '<')
+    {
+      if (command[cnt->i + 1] != '<')
+	cnt->l_red += 1;
+      if (cnt->l_red > 1 && cnt->l_arg == 0)
+        return (2);
+      cnt->l_arg = 0;
+    }
+  return (last_check_value(command, cnt));
+}
+
+int	change_count_value(char *command, t_counter *cnt)
 {
   if (match(command[cnt->i], "|&\t ") == 1)
     cnt->count = 0;
   if (match(command[cnt->i], "|\t ") == 1)
-    cnt->pipe = 0;
+    {
+      if (cnt->pipe == 1)
+        cnt->l_pipe = 1;
+      cnt->pipe = 0;
+    }
   if (match(command[cnt->i], ";&\t ") == 1)
     cnt->except = 0;
   if ((command[cnt->i] == '|' && command[cnt->i + 1] == '|') ||
       (command[cnt->i] == '&' && command[cnt->i + 1] == '&') ||
       command[cnt->i] == ';')
-    cnt->key = 0;
-  if (match(command[cnt->i], "><|& \t;") == 1 &&
-      (command[cnt->i + 1] == '\0' ||
-       match(command[cnt->i + 1], "><|& \t;") == 0))
-    cnt->arg += 1;
-  if (command[cnt->i] == '>')
-    cnt->key = 1;
+    {
+      if (cnt->l_arg == 0 && cnt->l_red > 0)
+        return (2);
+      if ((cnt->key = 0) == 0 && ((cnt->l_pipe > 0 && cnt->l_red > 0) ||
+				  (cnt->l_red > 1 && cnt->l_arg > 0)))
+        return (4);
+      cnt->l_red = 0;
+      cnt->r_red = 0;
+      cnt->l_arg = 0;
+      cnt->l_pipe = 0;
+    }
+  return (verif_count_value(command, cnt));
 }
 
 int	check_pipe_and_args(char *command, t_counter *cnt)
@@ -42,18 +91,19 @@ int	check_pipe_and_args(char *command, t_counter *cnt)
       cnt->except = 1;
     }
   if (command[cnt->i] == '|' && command[cnt->i - 1] != '|' &&
-      command[cnt->i + 1] != '|')
+      command[cnt->i + 1] != '|' && (cnt->l_arg = 0) == 0)
     {
       if ((cnt->error == 1 && cnt->arg < 2) ||
           (cnt->arg == 1 && cnt->redir > 0))
         return (1);
       if (cnt->key == 1 && cnt->arg == 0)
         return (2);
-      if (cnt->key == 1)
+      if ((cnt->arg = 0) == 0 && cnt->key == 1)
         return (3);
       cnt->pipe++;
-      cnt->arg = 0;
       cnt->error = 0;
+      cnt->l_red = 0;
+      cnt->r_red = 0;
     }
   return (0);
 }
@@ -84,19 +134,5 @@ int	check_redir_and_args(char *command, t_counter *cnt)
       cnt->arg = 0;
       cnt->error = 0;
     }
-  return (0);
-}
-
-int	eof_check(t_counter *cnt)
-{
-  if (cnt->redir > 0)
-    return (2);
-  if (cnt->pipe > 0)
-    return (1);
-  if (cnt->except == 1)
-    return (0);
-  if (cnt->count > 0 || (cnt->error == 1 && cnt->arg < 2) ||
-      (cnt->arg == 1 && cnt->redir > 0))
-    return (1);
   return (0);
 }
