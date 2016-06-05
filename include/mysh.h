@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 18:51:53 2016 ilyas semmaoui
+** Last update Sun Jun  5 18:57:42 2016 ilyas semmaoui
 */
 
 #ifndef MYSH_H_
@@ -18,33 +18,33 @@
 #  define WCOREDUMP(status) ((status) & 0x80)
 # endif /* !WCOREDUMP */
 
-typedef struct	s_var
+typedef struct		s_var
 {
-  char		*command;
-  char		*tmp;
-  char		*var;
-  int		i;
-  int		n;
-  int		start;
-}		t_var;
+  char			*command;
+  char			*tmp;
+  char			*var;
+  int			i;
+  int			n;
+  int			start;
+}			t_var;
 
-typedef struct	s_counter
+typedef struct		s_counter
 {
-  int		i;
-  int		redir;
-  int		l_red;
-  int		r_red;
-  int		count;
-  int		pipe;
-  int		l_pipe;
-  int		key;
-  int		arg;
-  int		l_arg;
-  int		except;
-  int		error;
-}		t_counter;
+  int			i;
+  int			redir;
+  int			l_red;
+  int			r_red;
+  int			count;
+  int			pipe;
+  int			l_pipe;
+  int			key;
+  int			arg;
+  int			l_arg;
+  int			except;
+  int			error;
+}			t_counter;
 
-typedef struct	s_interpipe
+typedef struct		s_interpipe
 {
   int			fd_input;
   char			*input_file;
