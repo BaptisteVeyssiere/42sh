@@ -5,10 +5,9 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Wed Jun  1 20:29:06 2016 Nathan Scutari
-** Last update Sun Jun  5 02:44:02 2016 Nathan Scutari
+** Last update Sun Jun  5 02:50:59 2016 Nathan Scutari
 */
 
-#include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
