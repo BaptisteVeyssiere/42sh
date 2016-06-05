@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Thu Jun  2 11:30:25 2016 vigner_g
-** Last update Sun Jun  5 16:30:39 2016 vigner_g
+** Last update Sun Jun  5 17:31:32 2016 vigner_g
 */
 
 #include	<stdio.h>
@@ -49,7 +49,8 @@ int		aff_history(t_history *history)
     tmp = tmp->next;
   while (tmp != NULL)
     {
-      printf("%i %s\n", i, tmp->command);
+      if ((printf("%i %s\n", i, tmp->command)) == -1)
+	return (-1);
       tmp = tmp->prev;
       i += 1;
     }
