@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Sun Jun  5 15:02:55 2016 ilyas semmaoui
+** Last update Sun Jun  5 15:15:48 2016 vigner_g
 */
 
 #include <sys/wait.h>
@@ -105,10 +105,7 @@ int	execute_interpipe(t_command *and_or, t_datas *data)
       while (++i < and_or->pipe_nbr)
         free(fildes[i]);
       if (ret == -1)
-	{
-	  free(pid);
-	  return (-1);
-	}
+	return (free_pid(pid));
       free(fildes);
     }
   free(pid);

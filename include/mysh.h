@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 14:34:06 2016 ilyas semmaoui
+** Last update Sun Jun  5 15:16:45 2016 vigner_g
 */
 
 #ifndef MYSH_H_
@@ -102,6 +102,7 @@ typedef struct		s_tree
 void	free_tab(char**);
 void	free_tree(t_tree**);
 void    free_all(t_datas *, char **);
+int	free_pid(int *);
 
 /*
 ** tools.c

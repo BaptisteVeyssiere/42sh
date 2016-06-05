@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:30:53 2016 Baptiste veyssiere
-** Last update Sun Jun  5 02:33:30 2016 Nathan Scutari
+** Last update Sun Jun  5 15:15:43 2016 vigner_g
 */
 
 #include <unistd.h>
@@ -58,6 +58,12 @@ void	free_tree(t_tree **tree)
       free(tree[i]);
     }
   free(tree);
+}
+
+int	free_pid(int *pid)
+{
+  free(pid);
+  return (-1);
 }
 
 void	free_all(t_datas *data, char **prompt)
