@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:30:53 2016 Baptiste veyssiere
-** Last update Sun Jun  5 15:15:43 2016 vigner_g
+** Last update Sun Jun  5 17:42:47 2016 Nathan Scutari
 */
 
 #include <unistd.h>
@@ -69,6 +69,7 @@ int	free_pid(int *pid)
 void	free_all(t_datas *data, char **prompt)
 {
   free_prompt(prompt);
+  free_alias(data->alias);
   free_history(data->history);
   close(data->fd);
   free(data->home);

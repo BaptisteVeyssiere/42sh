@@ -5,7 +5,7 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Wed Jun  1 20:29:06 2016 Nathan Scutari
-** Last update Sun Jun  5 17:39:32 2016 Baptiste veyssiere
+** Last update Sun Jun  5 22:39:59 2016 Nathan Scutari
 */
 
 #include <unistd.h>
@@ -37,6 +37,7 @@ static char	*get_home_path(char **env)
   while (file[++y])
     path[++x] = file[y];
   path[++x] = 0;
+  free(home);
   return (path);
 }
 
@@ -77,57 +78,56 @@ static void		create_alias(t_alias **list, char *alias, char *equivalent)
   *list = elem;
 }
 
-static void	check_line(char *line, t_alias **list)
+static int	check_line(char *line, t_alias **list)
 {
   char	*alias;
   char	*equivalent;
   int	x;
 
-  x = -1;
+  init_var(&x, &alias, &equivalent);
   while (line[++x] == ' ' || line[x] == '\t');
   if (!line[x])
-    return ;
+    return (0);
   if (my_strcmp("alias ", &line[x]) == 0)
-    return ;
+    return (0);
   x -= 1;
   while (line[++x] && line[x] != ' ' && line[x] != '\t');
   if (!line[x])
-    return ;
+    return (0);
   if ((x = get_alias_arg(line, x, &alias)) == 0)
-    return ;
+    return (free_errors(alias, equivalent));
   if ((x = get_alias_arg(line, x, &equivalent)) == 0)
-    return ;
+    return (free_errors(alias, equivalent));
   while (line[++x] == ' ' || line[x] == '\t');
   if (line[x])
-    return ;
+    return (free_errors(alias, equivalent));
   create_alias(list, alias, equivalent);
+  return (0);
 }
 
 t_alias		*load_alias(char *path, char **env, t_alias *old)
 {
   char		*line;
   int		fd;
+  int		u_path;
   t_alias	*alias;
 
-  alias = NULL;
-  if (!path && (path = get_home_path(env)) == NULL)
+  u_path = 0;
+  if (!path && (u_path = 1) && (path = get_home_path(env)) == NULL)
     return (NULL);
-  if (my_strcmp_strict("/dev/urandom", path) ||
+  if ((alias = NULL) || my_strcmp_strict("/dev/urandom", path) ||
       (fd = open(path, O_RDONLY)) == -1)
-    return (NULL);
+    {
+      if (u_path && path)
+	free(path);
+      return (NULL);
+    }
+  if (u_path && path)
+    free(path);
   while ((line = get_next_line(fd)) != NULL)
     {
       check_line(line, &alias);
       free(line);
     }
-  if (!alias)
-    return (old);
-  else if (old)
-    {
-      if (close(old->source) == -1)
-	return (NULL);
-      free_alias(old);
-    }
-  alias->source = fd;
-  return (alias);
+  return (manage_return(old, alias, fd));
 }

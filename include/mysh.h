@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 15:16:45 2016 vigner_g
+** Last update Sun Jun  5 22:39:52 2016 Nathan Scutari
 */
 
 #ifndef MYSH_H_
@@ -363,5 +363,12 @@ int	check_dir_permission(char*, char);
 ** main.c
 */
 void	handler(int);
+
+/*
+** alias_tools_bis.c
+*/
+t_alias		*manage_return(t_alias *, t_alias *, int);
+void	init_var(int *, char **, char **);
+int	free_errors(char *, char *);
 
 #endif /* !MYSH_H_ */

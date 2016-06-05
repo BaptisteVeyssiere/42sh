@@ -5,7 +5,7 @@
 ## Login   <VEYSSI_B@epitech.net>
 ##
 ## Started on  Wed May 18 21:26:30 2016 Baptiste veyssiere
-## Last update Sun Jun  5 16:43:05 2016 Baptiste veyssiere
+## Last update Sun Jun  5 22:40:09 2016 Nathan Scutari
 ##
 
 NAME	= 42sh
@@ -19,6 +19,7 @@ MKDIR	= mkdir -p
 SRC	= src/main.c \
 	src/get_tree.c \
 	src/error.c \
+	src/alias_tools_bis.c \
 	src/tools.c \
 	src/free_tools.c \
 	src/epure_str.c \
@@ -71,7 +72,7 @@ OBJDIR	= obj
 
 OBJ	= $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-CFLAGS	= -W -Wextra -Wall -ansi -pedantic -Iinclude
+CFLAGS	= -W -Wextra -Wall -ansi -pedantic -Iinclude -g
 
 $(NAME): $(OBJ)
 	@$(CC) -o $(NAME) $(OBJ)
