@@ -5,14 +5,14 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Sun Jun  5 22:37:21 2016 Nathan Scutari
-** Last update Sun Jun  5 22:40:28 2016 Nathan Scutari
+** Last update Sun Jun  5 22:44:02 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include "mysh.h"
 
-t_alias		*manage_return(t_alias *old, t_alias *alias, int fd)
+t_alias		*manage_ret(t_alias *old, t_alias *alias, int fd)
 {
   if (!alias)
     return (old);

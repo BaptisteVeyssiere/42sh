@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 22:42:05 2016 Nathan Scutari
+** Last update Sun Jun  5 22:44:11 2016 Baptiste veyssiere
 */
 
 #ifndef MYSH_H_
@@ -370,7 +370,7 @@ void	handler(int);
 /*
 ** alias_tools_bis.c
 */
-t_alias		*manage_return(t_alias *, t_alias *, int);
+t_alias		*manage_ret(t_alias *, t_alias *, int);
 void		init_var(int *, char **, char **);
 int		free_errors(char *, char *);
 

@@ -5,7 +5,7 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Wed Jun  1 20:29:06 2016 Nathan Scutari
-** Last update Sun Jun  5 22:39:59 2016 Nathan Scutari
+** Last update Sun Jun  5 22:43:50 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -129,5 +129,5 @@ t_alias		*load_alias(char *path, char **env, t_alias *old)
       check_line(line, &alias);
       free(line);
     }
-  return (manage_return(old, alias, fd));
+  return (manage_ret(old, alias, fd));
 }
