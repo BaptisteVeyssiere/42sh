@@ -5,7 +5,7 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Wed Jun  1 20:29:06 2016 Nathan Scutari
-** Last update Sun Jun  5 17:26:18 2016 Baptiste veyssiere
+** Last update Sun Jun  5 17:39:32 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -125,7 +125,7 @@ t_alias		*load_alias(char *path, char **env, t_alias *old)
   else if (old)
     {
       if (close(old->source) == -1)
-	return (-1);
+	return (NULL);
       free_alias(old);
     }
   alias->source = fd;

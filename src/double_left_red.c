@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun Apr 10 00:49:54 2016 Baptiste veyssiere
-** Last update Sun Jun  5 17:33:55 2016 Baptiste veyssiere
+** Last update Sun Jun  5 17:39:18 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -27,6 +27,7 @@ static int	fill_file(int fd, char *end)
 	return (-1);
       free(str);
     }
+  return (0);
 }
 
 int	double_left_red(t_interpipe *command)
