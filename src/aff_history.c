@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Thu Jun  2 11:30:25 2016 vigner_g
-** Last update Sun Jun  5 16:17:29 2016 vigner_g
+** Last update Sun Jun  5 16:30:39 2016 vigner_g
 */
 
 #include	<stdio.h>
@@ -20,7 +20,7 @@ int		ret_history(t_datas *data, t_history *history, char *str)
   t_history	*tmp;
 
   str += 1;
-  i = 1;
+  i = 0;
   tmp = history;
   if (str != 0)
     {
