@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Sun Jun  5 14:09:33 2016 ilyas semmaoui
+** Last update Sun Jun  5 15:02:55 2016 ilyas semmaoui
 */
 
 #include <sys/wait.h>
@@ -92,27 +92,23 @@ int	execute_interpipe(t_command *and_or, t_datas *data)
   int   *pid;
   int	ret;
 
-  if (((and_or->pipe_nbr &&
+  if ((i = -1) == -1 && (((and_or->pipe_nbr &&
         !(fildes = malloc(sizeof(int*) * and_or->pipe_nbr)))) ||
-      !(pid = malloc(sizeof(int) * (and_or->pipe_nbr + 1))))
+			 !(pid = malloc(sizeof(int) * (and_or->pipe_nbr + 1)))))
     return (-1);
-  i = -1;
   while (++i < and_or->pipe_nbr)
     if ((fildes[i] = malloc(sizeof(int) * 2)) == NULL)
       return (-1);
-  if ((ret = execute_loop(and_or, fildes, pid, data)) == -1)
+  if ((i = -1) == -1 && ((ret = execute_loop(and_or, fildes, pid, data)) == -1
+			 || and_or->pipe_nbr))
     {
-      i = -1;
-      while (++i < and_or->pipe_nbr)
-	free(fildes[i]);
-      free(pid);
-      return (-1);
-    }
-  if (and_or->pipe_nbr)
-    {
-      i = -1;
       while (++i < and_or->pipe_nbr)
         free(fildes[i]);
+      if (ret == -1)
+	{
+	  free(pid);
+	  return (-1);
+	}
       free(fildes);
     }
   free(pid);

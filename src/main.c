@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Sun Jun  5 14:31:47 2016 ilyas semmaoui
+** Last update Sun Jun  5 14:46:44 2016 ilyas semmaoui
 */
 
 #include	<stdlib.h>
@@ -14,11 +14,11 @@
 #include	"mysh.h"
 #include	"get_next_line.h"
 
-int		ctrlc = 0;
+int		ctrc = 0;
 
 void		handler(UNUSED int sign)
 {
-  ctrlc = 1;
+  ctrc = 1;
   if (signal(SIGINT, &handler) == SIG_ERR ||
       write(1, "\n", 1) == -1)
     return ;
@@ -60,16 +60,16 @@ static int	my_shell(char **env_tmp)
   ret = 0;
   if (signal(SIGINT, &handler) == SIG_ERR)
     return (-1);
-  while ((command = get_next_line(0)) || (command == NULL && ctrlc == 1))
+  while ((command = get_next_line(0)) || (command == NULL && ctrc == 1))
     {
-      ctrlc = 0;
-      if (command && (ret = execute_command(&data, command)) == -1 && ctrlc == 0)
+      ctrc = 0;
+      if (command && (ret = execute_command(&data, command)) == -1 && ctrc == 0)
 	return (-1);
       free(command);
       free_prompt(prompt);
       if (!(prompt = get_prompt()) || aff_prompt(prompt) == -1)
 	return (-1);
-      ctrlc = 0;
+      ctrc = 0;
     }
   free_all(&data, prompt);
   return (ret);
