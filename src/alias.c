@@ -5,7 +5,7 @@
 ** Login   <scutar_n@epitech.net>
 **
 ** Started on  Wed Jun  1 20:29:06 2016 Nathan Scutari
-** Last update Sun Jun  5 02:44:02 2016 Nathan Scutari
+** Last update Sun Jun  5 11:26:01 2016 vigner_g
 */
 
 #include <stdio.h>
@@ -73,7 +73,7 @@ int	get_alias_arg(char *str, int x, char **alias)
       if (!str[x])
 	return (0);
       if (cut_alias(str, save, x - 1, alias))
-	return 0;
+	return (0);
       return (x + 1);
     }
   save = x;
@@ -117,7 +117,7 @@ void	check_line(char *line, t_alias **list)
     return ;
   while (line[++x] == ' ' || line[x] == '\t');
   if (line[x])
-    return;
+    return ;
   create_alias(list, alias, equivalent);
 }
 
@@ -135,7 +135,7 @@ void		free_alias(t_alias *list)
     }
 }
 
-t_alias	*load_alias(char *path, char **env, t_alias *old)
+t_alias		*load_alias(char *path, char **env, t_alias *old)
 {
   char		*line;
   int		fd;
