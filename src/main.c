@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Sun Jun  5 02:43:09 2016 Nathan Scutari
+** Last update Sun Jun  5 00:55:29 2016 vigner_g
 */
 
 #include	<stdlib.h>
@@ -33,11 +33,12 @@ static int	my_shell(char **env_tmp)
 
   data.history = NULL;
   data.alias = load_alias(NULL, env_tmp, NULL);
-  if ((data.home = get_varenv(env_tmp, "HOME")) != NULL)
-    data.history = load_history(&data, data.home, "default", data.history);
   if (clone_env(env_tmp, &data) == -1 || (prompt = get_prompt()) == NULL ||
       aff_prompt(prompt) == -1)
       return (-1);
+  if ((data.home = get_varenv(env_tmp, "HOME")) != NULL)
+    data.history = load_history(&data, data.home,
+				"default", data.history);
   ret = 0;
   while ((command = get_next_line(0)))
     {
