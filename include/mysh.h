@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sun Jun  5 15:16:45 2016 vigner_g
+** Last update Sun Jun  5 18:51:53 2016 ilyas semmaoui
 */
 
 #ifndef MYSH_H_
@@ -32,10 +32,14 @@ typedef struct	s_counter
 {
   int		i;
   int		redir;
+  int		l_red;
+  int		r_red;
   int		count;
   int		pipe;
+  int		l_pipe;
   int		key;
   int		arg;
+  int		l_arg;
   int		except;
   int		error;
 }		t_counter;
@@ -306,10 +310,9 @@ int	check_command(char*);
 /*
 ** verif_command.c
 */
-void	change_count_value(char*, t_counter*);
+int	change_count_value(char*, t_counter*);
 int	check_pipe_and_args(char*, t_counter*);
 int	check_redir_and_args(char*, t_counter*);
-int	eof_check(t_counter *);
 
 /*
 ** match.c
