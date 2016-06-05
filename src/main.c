@@ -5,13 +5,25 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:14:35 2016 Baptiste veyssiere
-** Last update Sat Jun  4 19:45:53 2016 vigner_g
+** Last update Sun Jun  5 14:07:32 2016 ilyas semmaoui
 */
 
 #include	<stdlib.h>
 #include	<unistd.h>
+#include	<stdio.h>
+#include	<signal.h>
 #include	"mysh.h"
 #include	"get_next_line.h"
+
+int		ctrlc = 0;
+
+void		handler(UNUSED int sign)
+{
+  ctrlc = 1;
+  if (signal(SIGINT, &handler) == SIG_ERR ||
+      write(1, "\n", 1) == -1)
+    return ;
+}
 
 static int	clone_env(char **env_tmp, t_datas *data)
 {
@@ -24,6 +36,18 @@ static int	clone_env(char **env_tmp, t_datas *data)
   return (0);
 }
 
+static int	loading_data(t_datas *data, char **env_tmp, char ***prompt)
+{
+  data->history = NULL;
+  if ((data->home = get_varenv(env_tmp, "HOME")) != NULL)
+    data->history = load_history(data, data->home,
+				"default", data->history);
+  if (clone_env(env_tmp, data) == -1 || (*prompt = get_prompt()) == NULL ||
+      aff_prompt(*prompt) == -1)
+    return (-1);
+  return (0);
+}
+
 static int	my_shell(char **env_tmp)
 {
   char		*command;
@@ -31,23 +55,29 @@ static int	my_shell(char **env_tmp)
   t_datas	data;
   int		ret;
 
-  data.history = NULL;
-  if ((data.home = get_varenv(env_tmp, "HOME")) != NULL)
-    data.history = load_history(&data, data.home,
-				"default", data.history);
-  if (clone_env(env_tmp, &data) == -1 || (prompt = get_prompt()) == NULL ||
-      aff_prompt(prompt) == -1)
-      return (-1);
+  if (loading_data(&data, env_tmp, &prompt) == -1)
+    return (-1);
+  /* data.history = NULL; */
+  /* if ((data.home = get_varenv(env_tmp, "HOME")) != NULL) */
+  /*   data.history = load_history(&data, data.home, */
+  /* 				"default", data.history); */
+  /* if (clone_env(env_tmp, &data) == -1 || (prompt = get_prompt()) == NULL || */
+  /*     aff_prompt(prompt) == -1) */
+  /*     return (-1); */
   ret = 0;
-  while ((command = get_next_line(0)))
+  if (signal(SIGINT, &handler) == SIG_ERR)
+    return (-1);
+  while ((command = get_next_line(0)) || (command == NULL && ctrlc == 1))
     {
-      if ((ret = execute_command(&data, command)) == -1)
+      ctrlc = 0;
+      if (command && (ret = execute_command(&data, command)) == -1 && ctrlc == 0)
 	return (-1);
       free(command);
       free_prompt(prompt);
       if (!(prompt = get_prompt()) ||
 	  aff_prompt(prompt) == -1)
 	return (-1);
+      ctrlc = 0;
     }
   free_all(&data, prompt);
   return (ret);
