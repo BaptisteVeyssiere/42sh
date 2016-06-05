@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:19:37 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:51:04 2016 vigner_g
+** Last update Sun Jun  5 02:16:21 2016 Nathan Scutari
 */
 
 #ifndef MYSH_H_
@@ -63,19 +63,20 @@ typedef struct		s_command
   t_interpipe		**command;
 }			t_command;
 
-typedef struct		s_alias
-{
-  char			**from;
-  char			**to;
-  struct s_alias	*next;
-}			t_alias;
-
 typedef struct		s_history
 {
   char			*command;
   struct s_history	*next;
   struct s_history	*prev;
 }			t_history;
+
+typedef struct		s_alias
+{
+  int			source;
+  char			*alias;
+  char			*equivalent;
+  struct s_alias        *next;
+}			t_alias;
 
 typedef struct		s_datas
 {
@@ -321,5 +322,11 @@ int	check_var(t_interpipe**, char**, int);
 ** my_getstr.c
 */
 char	*my_getstr(int);
+
+/*
+** alias.c
+*/
+t_alias	*load_alias(char *, char **, t_alias *);
+char	*replace_by_alias(char *, t_alias *);
 
 #endif /* !MYSH_H_ */

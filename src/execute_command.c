@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Sat Jun  4 19:52:33 2016 vigner_g
+** Last update Sun Jun  5 02:39:21 2016 Nathan Scutari
 */
 
 #include <stdlib.h>
@@ -100,11 +100,11 @@ int		execute_command(t_datas *data, char *str)
   int		error;
   t_tree	**tree;
 
-  if (!(command = epure_str(str)))
+  if (!(command = epure_str(replace_by_alias(str, data->alias))))
     return (-1);
   if ((error = check_command(command)))
     return (error);
-  if (!command[0])
+  if (!(command)[0])
     {
       free(command);
       return (0);
