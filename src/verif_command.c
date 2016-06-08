@@ -5,7 +5,7 @@
 ** Login   <semmao_i@epitech.net>
 **
 ** Started on  Wed Jun  1 18:50:01 2016 ilyas semmaoui
-** Last update Thu Jun  9 00:48:19 2016 Baptiste veyssiere
+** Last update Thu Jun  9 00:53:49 2016 Baptiste veyssiere
 */
 
 #include "mysh.h"
@@ -56,10 +56,9 @@ int	change_count_value(char *command, t_counter *cnt)
     cnt->count = 0;
   if (cnt->pipe > 0 && match(command[cnt->i], "|;&") == 0)
     return (1);
-  if (match(command[cnt->i], "|\t ") == 1 && cnt->pipe == 1)
-    cnt->l_pipe = 1;
-  else if (match(command[cnt->i], "|\t ") == 1)
-    cnt->pipe = 0;
+  if (match(command[cnt->i], "|\t ") == 1)
+    if ((cnt->pipe == 1 && (cnt->l_pipe = 1) == 1) || 1)
+      cnt->pipe = 0;
   if (match(command[cnt->i], ";&\t ") == 1)
     cnt->except = 0;
   if ((command[cnt->i] == '|' && command[cnt->i + 1] == '|') ||
