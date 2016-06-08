@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Wed May 25 17:35:13 2016 Baptiste veyssiere
-** Last update Sun Jun  5 17:47:15 2016 Baptiste veyssiere
+** Last update Thu Jun  9 00:44:19 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
@@ -21,9 +21,9 @@ static int	close_files(t_interpipe **command)
   ret = 0;
   while (command[++i])
     {
-      if (command[i]->input_file)
+      if (command[i]->left_red)
 	ret = close(command[i]->fd_input);
-      if (command[i]->output_file)
+      if (command[i]->right_red || command[i]->if_double_right)
 	ret = close(command[i]->fd_output);
     }
   if (ret == -1)

@@ -1,11 +1,11 @@
 /*
 ** verif_command.c for 42sh in /home/semmao_i/rendu/PSU_2015_42sh
-** 
+**
 ** Made by ilyas semmaoui
 ** Login   <semmao_i@epitech.net>
-** 
+**
 ** Started on  Wed Jun  1 18:50:01 2016 ilyas semmaoui
-** Last update Sun Jun  5 18:46:19 2016 ilyas semmaoui
+** Last update Thu Jun  9 00:48:19 2016 Baptiste veyssiere
 */
 
 #include "mysh.h"
@@ -54,12 +54,12 @@ int	change_count_value(char *command, t_counter *cnt)
 {
   if (match(command[cnt->i], "|&\t ") == 1)
     cnt->count = 0;
-  if (match(command[cnt->i], "|\t ") == 1)
-    {
-      if (cnt->pipe == 1)
-        cnt->l_pipe = 1;
-      cnt->pipe = 0;
-    }
+  if (cnt->pipe > 0 && match(command[cnt->i], "|;&") == 0)
+    return (1);
+  if (match(command[cnt->i], "|\t ") == 1 && cnt->pipe == 1)
+    cnt->l_pipe = 1;
+  else if (match(command[cnt->i], "|\t ") == 1)
+    cnt->pipe = 0;
   if (match(command[cnt->i], ";&\t ") == 1)
     cnt->except = 0;
   if ((command[cnt->i] == '|' && command[cnt->i + 1] == '|') ||

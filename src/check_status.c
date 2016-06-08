@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Sun Jun  5 00:12:05 2016 vigner_g
-** Last update Sun Jun  5 00:15:01 2016 vigner_g
+** Last update Thu Jun  9 00:46:27 2016 Baptiste veyssiere
 */
 
 #include	<sys/wait.h>
@@ -25,15 +25,14 @@ int	check_status(int pid, int *ret)
   if (WIFSIGNALED(status))
     {
       signal = WTERMSIG(status);
-      if (WCOREDUMP(status) && (*ret = 139) == 139 &&
-	  write(1,"segmentation fault (core dumped)\n", 33) == -1)
-	return (-1);
-      else if (signal == SIGSEGV &&
-	       (*ret = 139) == 139 && write(1, "Segmentation fault\n", 19) == -1)
+      if (signal == SIGSEGV &&
+	  (*ret = 139) == 139 && write(1, "Segmentation fault\n", 19) == -1)
 	return (-1);
       else if (signal == SIGFPE &&
 	       (*ret = 136) == 136 && write(1, "Floating exception\n", 19) == -1)
 	return (-1);
+      if (WCOREDUMP(status) && write(1, " (core dumped)\n", 15) == -1)
+        return (-1);
     }
   return (0);
 }

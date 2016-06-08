@@ -5,7 +5,7 @@
 ** Login   <VEYSSI_B@epitech.net>
 **
 ** Started on  Sun May 29 01:43:17 2016 Baptiste veyssiere
-** Last update Sat Jun  4 18:09:08 2016 Baptiste veyssiere
+** Last update Thu Jun  9 00:36:08 2016 Baptiste veyssiere
 */
 
 #include <unistd.h>
@@ -20,7 +20,7 @@ static int	change_fd_on(int *fd_input, int *fd_output,
     {
       if ((*fd_input = dup(0)) == -1 || close(0) == -1 ||
           dup(command->command[i]->fd_input) == -1)
-        return (-1);
+	return (-1);
     }
   if (command->command[i]->fd_output != 1)
     {

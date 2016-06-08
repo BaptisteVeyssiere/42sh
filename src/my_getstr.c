@@ -1,11 +1,11 @@
 /*
 ** my_getstr.c for my_getstr in /home/semmao_i/rendu/PSU_2015_42sh
-** 
+**
 ** Made by ilyas semmaoui
 ** Login   <semmao_i@epitech.net>
-** 
+**
 ** Started on  Fri Jun  3 17:03:16 2016 ilyas semmaoui
-** Last update Fri Jun  3 17:20:13 2016 ilyas semmaoui
+** Last update Wed Jun  8 16:06:27 2016 Baptiste veyssiere
 */
 
 #include <stdlib.h>
