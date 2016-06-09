@@ -5,7 +5,7 @@
 ** Login   <vigner_g@epitech.net>
 **
 ** Started on  Sun Jun  5 00:12:05 2016 vigner_g
-** Last update Thu Jun  9 10:31:09 2016 Baptiste veyssiere
+** Last update Thu Jun  9 10:32:30 2016 Baptiste veyssiere
 */
 
 #include	<sys/wait.h>
@@ -33,7 +33,8 @@ int	check_status(int pid, int *ret)
 	return (-1);
       if (WCOREDUMP(status) && write(1, " (core dumped)\n", 15) == -1)
         return (-1);
-      else if ((*ret == 136 || *ret == 139) && write(1, "\n", 1) == -1)
+      else if (!WCOREDUMP(status) &&
+	       (*ret == 136 || *ret == 139) && write(1, "\n", 1) == -1)
 	return (-1);
     }
   return (0);
