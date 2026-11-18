@@ -24,9 +24,9 @@ char	*get_inter_tab(char *command, int and_or_nbr)
   i = -1;
   j = -1;
   while (command[++i])
-    if (command[i] == '|' && command[i + 1] == '|')
+    if (is_or_if(command, i))
       tab[++j] = 2;
-    else if (command[i] == '&' && command[i + 1] == '&')
+    else if (is_and_if(command, i))
       tab[++j] = 1;
   return (tab);
 }

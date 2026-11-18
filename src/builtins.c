@@ -17,7 +17,6 @@ static int	check_mode_a(t_interpipe *command)
   if (my_strcmp_strict(command->args[0], "cd") ||
       my_strcmp_strict(command->args[0], "exit") ||
       my_strcmp_strict(command->args[0], "profile") ||
-      my_strcmp_strict(command->args[0], "history") ||
       my_strcmp_strict(command->args[0], "source") ||
       (strncmp(command->args[0], "!", 1)) == 0 ||
       (my_strcmp_strict(command->args[0], "setenv") &&
@@ -25,6 +24,23 @@ static int	check_mode_a(t_interpipe *command)
       my_strcmp_strict(command->args[0], "unsetenv"))
     return (1);
   return (0);
+}
+
+int		is_shell_builtin(char *name)
+{
+  if (!name || !name[0])
+    return (0);
+  if (name[0] == '!')
+    return (1);
+  return (my_strcmp_strict(name, "cd") ||
+	  my_strcmp_strict(name, "env") ||
+	  my_strcmp_strict(name, "setenv") ||
+	  my_strcmp_strict(name, "unsetenv") ||
+	  my_strcmp_strict(name, "exit") ||
+	  my_strcmp_strict(name, "echo") ||
+	  my_strcmp_strict(name, "history") ||
+	  my_strcmp_strict(name, "source") ||
+	  my_strcmp_strict(name, "profile"));
 }
 
 static int	check_mode_b(t_interpipe *command)
@@ -82,14 +98,20 @@ int		exec_builtins(char **args, char ***env, t_datas *data)
   name[5] = "echo";
   create_func_ptr(ptr);
   i = -1;
-  if (args[0] != NULL && data->fd != -1 && my_strcmp_strict(args[0], "profile"))
-    profile(args, data);
+  if (args[0] != NULL && my_strcmp_strict(args[0], "profile"))
+    {
+      profile(args, data);
+      return (0);
+    }
   else if (args[0] != NULL && my_strcmp_strict(args[0], "source"))
-    data->alias = load_alias(args[1], *env, data->alias);
+    {
+      data->alias = load_alias(args[1], *env, data->alias);
+      return (0);
+    }
   else if (args[0] != NULL && my_strcmp_strict(args[0], "history"))
-    aff_history(data->history);
+    return (aff_history(data->history) == -1 ? 1 : 0);
   else if (args[0] != NULL && strncmp(args[0], "!", 1) == 0)
-    ret_history(data, data->history, args[0]);
+    return (ret_history(data, data->history, args[0]));
   while (++i < 6 && !my_strcmp_strict(name[i], args[0]));
   if (i == 6)
     return (1);

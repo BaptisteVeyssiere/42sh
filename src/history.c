@@ -45,7 +45,7 @@ int		get_file_descriptor(char *home, char *profile, char *type)
   my_strcat(path, type);
   my_strcat(path, "_");
   my_strcat(path, profile);
-  if ((fd = open(path, O_RDWR | O_CREAT,
+  if ((fd = open(path, O_RDWR | O_CREAT | O_APPEND,
 		 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
     return (my_int_perror("get_file_descriptor failed\n", -1));
   free(path);
@@ -64,22 +64,26 @@ int		save_in_file(t_datas *data, char *command)
   return (0);
 }
 
-t_history	*add_a_command(t_history *history, char *command)
+int		add_a_command(t_history **history, char *command)
 {
   t_history	*new;
 
-  if (command[0] != 0 && command[0] != '!')
+  if (!command || command[0] == '\0' || command[0] == '!')
+    return (0);
+  if ((new = malloc(sizeof(t_history))) == NULL)
+    return (-1);
+  new->command = copy_str(command);
+  if (!new->command)
     {
-      if ((new = malloc(sizeof(t_history))) == NULL)
-	return (NULL);
-      new->prev = NULL;
-      new->next = history;
-      if (history != NULL)
-	history->prev = new;
-      new->command = command;
-      history = new;
+      free(new);
+      return (-1);
     }
-  return (history);
+  new->prev = NULL;
+  new->next = *history;
+  if (*history != NULL)
+    (*history)->prev = new;
+  *history = new;
+  return (0);
 }
 
 t_history	*load_history(t_datas *data, char *path,
@@ -93,7 +97,13 @@ t_history	*load_history(t_datas *data, char *path,
     return (NULL);
   history = NULL;
   while ((buff = get_next_line(data->fd)) != NULL)
-    if ((history = add_a_command(history, buff)) == NULL)
-      return (NULL);
+    {
+      if (add_a_command(&history, buff) == -1)
+	{
+	  free(buff);
+	  return (NULL);
+	}
+      free(buff);
+    }
   return (history);
 }

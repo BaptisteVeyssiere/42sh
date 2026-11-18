@@ -45,7 +45,7 @@ static char	**unsetenv_var_of_env(char **env, char **command)
   char		*var;
   char		**new_env;
 
-  if (!(var = malloc(my_strlen(command[1] + 2))))
+  if (!(var = malloc(my_strlen(command[1]) + 2)))
     return (NULL);
   i = -1;
   while (command[1][++i] && command[1][i] != '=')
@@ -75,7 +75,7 @@ int	unsetenv_builtin(char ***env, char **command)
   if (arg_nbr < 2)
     return (my_int_perror("unsetenv: Too few arguments.\n", 1));
   else if (arg_nbr > 2)
-    return (my_int_perror("unsetenv: Too few arguments.\n", 1));
+    return (my_int_perror("unsetenv: Too many arguments.\n", 1));
   else if (!env)
     return (0);
   if (!(new_env = unsetenv_var_of_env(*env, command)))

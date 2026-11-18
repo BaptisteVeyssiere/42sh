@@ -22,7 +22,8 @@ char	*get_varenv(char **env, char *str)
   i = -1;
   if (env == NULL || env[0] == NULL)
     return (NULL);
-  while (env[++i] != NULL && !my_strcmp(str, env[i]));
+  while (env[++i] != NULL &&
+	 !(my_strcmp(str, env[i]) && env[i][my_strlen(str)] == '='));
   if (env[i] == NULL)
     return (NULL);
   j = 0;

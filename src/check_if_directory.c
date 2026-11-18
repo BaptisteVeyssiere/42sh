@@ -17,16 +17,13 @@ int		check_if_directory(char *command)
 {
   struct stat	buf;
 
-  if (command[0] != '/')
+  if (!command || !command[0] || stat(command, &buf) == -1)
     return (0);
-  if (access(command, F_OK) == 0 &&
-      stat(command, &buf) == -1)
-    return (-1);
   if (S_ISDIR(buf.st_mode))
     {
       if (write(2, command, my_strlen(command)) == -1)
 	return (-1);
-      return (my_int_perror(": Permission denied.\n", 1));
+      return (my_int_perror(": Is a directory.\n", 1));
     }
   return (0);
 }
@@ -90,19 +87,19 @@ int	check_varenv_name(char *name)
   int	i;
 
   i = -1;
-  if (name[0] < 'A' ||
-      (name[0] > 'Z' && name[0] < 'a') ||
-      name[0] > 'z')
+  if (name[0] != '_' &&
+      (name[0] < 'A' || (name[0] > 'Z' && name[0] < 'a') || name[0] > 'z'))
     {
       if (my_int_perror("setenv: Variable name must begin", 0))
 	return (-1);
       return (my_int_perror(" with a letter.\n", 1));
     }
   while (name[++i])
-    if (name[i] < '0' ||
-	(name[i] > '9' && name[i] < 'A') ||
-	(name[i] > 'Z' && name[i] < 'a') ||
-	name[i] > 'z')
+    if (name[i] != '_' &&
+	(name[i] < '0' ||
+	 (name[i] > '9' && name[i] < 'A') ||
+	 (name[i] > 'Z' && name[i] < 'a') ||
+	 name[i] > 'z'))
       {
 	if (my_int_perror("setenv: Variable name must contain", 0))
 	  return (-1);

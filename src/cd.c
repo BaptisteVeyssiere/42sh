@@ -1,112 +1,125 @@
 /*
-** cd.c for mysh in /home/VEYSSI_B/rendu/Programmation_Shell/PSU_2015_minishell2
-**
-** Made by Baptiste veyssiere
-** Login   <VEYSSI_B@epitech.net>
-**
-** Started on  Wed Mar 30 16:41:56 2016 Baptiste veyssiere
-** Last update Tue May 31 20:01:42 2016 Baptiste veyssiere
+** cd builtin. Updates PWD and OLDPWD from the physical working directory.
 */
 
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
 #include "mysh.h"
 
-static int	cd_setenv(char ***env, char *var, char *value)
+static int	cd_error(const char *path, const char *msg)
 {
-  char		**tab;
-
-  if ((tab = malloc(sizeof(char*) * 4)) == NULL ||
-      (tab[0] = malloc(sizeof(char) * (my_strlen("setenv") + 1))) == NULL ||
-      (tab[1] = malloc(sizeof(char) * (my_strlen(var) + 1))) == NULL ||
-      (tab[2] = malloc(sizeof(char) * (my_strlen(value) + 1))) == NULL)
-    return (-1);
-  tab[3] = NULL;
-  my_strcpy("setenv", tab[0]);
-  my_strcpy(var, tab[1]);
-  my_strcpy(value, tab[2]);
-  if (setenv_builtin(env, tab) == -1)
-    return (-1);
-  free_tab(tab);
-  return (0);
-}
-
-static int	cd_home(char ***env)
-{
-  char		*home;
-  char		*pwd;
-
-  if ((home = get_varenv(*env, "HOME")) == NULL ||
-      (pwd = get_varenv(*env, "PWD")) == NULL)
-    return (-1);
-  if (chdir(home) == -1)
-    return (-1);
-  if (cd_setenv(env, "OLDPWD", pwd) == -1 ||
-      cd_setenv(env, "PWD", home) == -1)
-    return (-1);
-  free(pwd);
-  free(home);
-  return (0);
-}
-
-static int	cd_prev(char ***env, char **oldpwd)
-{
-  char		*pwd;
-  char		*buf;
-
-  buf = NULL;
-  if ((pwd = getcwd(buf, 100)) == NULL)
-    return (-1);
-  if (chdir(*oldpwd) == -1)
-    return (-1);
-  if (cd_setenv(env, "OLDPWD", pwd) == -1 ||
-      cd_setenv(env, "PWD", *oldpwd) == -1)
-    return (-1);
-  free(*oldpwd);
-  *oldpwd = pwd;
-  return (0);
-}
-
-static int	cd_basic(char **command, char ***env)
-{
-  char		*pwd;
-  char		*buf;
-
-  buf = NULL;
-  if ((pwd = getcwd(buf, 100)) == NULL)
-    return (-1);
-  if (check_if_exist(command[1]))
+  if (path && path[0] &&
+      (write(2, path, (size_t)my_strlen((char *)path)) == -1 ||
+       write(2, ": ", 2) == -1))
     return (1);
-  if (chdir(command[1]) == -1)
-    return (-1);
-  buf = NULL;
-  if (cd_setenv(env, "OLDPWD", pwd) == -1 ||
-      cd_setenv(env, "PWD", getcwd(buf, 100)) == -1)
-    return (-1);
-  free(buf);
-  free(pwd);
-  return (0);
+  write(2, msg, (size_t)my_strlen((char *)msg));
+  return (1);
 }
 
-int		cd_builtin(char ***env, char **command)
+static char	*cwd_dup(void)
 {
-  static char	*oldpwd = NULL;
+  size_t	size;
   char		*buf;
 
-  buf = NULL;
-  if (!command[1] || my_strcmp_strict("~", command[1]))
+  size = 64;
+  while (1)
     {
-      if (!(oldpwd = getcwd(buf, 100)) ||
-	  cd_home(env))
-	return (-1);
+      buf = malloc(size);
+      if (!buf)
+	return (NULL);
+      if (getcwd(buf, size))
+	return (buf);
+      free(buf);
+      if (errno != ERANGE || size > 1024 * 1024)
+	return (NULL);
+      size *= 2;
     }
-  else if (my_strcmp_strict("-", command[1]))
+}
+
+static int	env_assign(char ***env, const char *key, const char *value)
+{
+  char		*argv[4];
+
+  argv[0] = (char *)"setenv";
+  argv[1] = (char *)key;
+  argv[2] = (char *)value;
+  argv[3] = NULL;
+  return (setenv_builtin(env, argv));
+}
+
+static int	chdir_error(const char *path)
+{
+  if (errno == ENOENT)
+    return (cd_error(path, "No such file or directory.\n"));
+  if (errno == ENOTDIR)
+    return (cd_error(path, "Not a directory.\n"));
+  return (cd_error(path, "Permission denied.\n"));
+}
+
+int	cd_builtin(char ***env, char **command)
+{
+  int		argc;
+  char		*target;
+  char		*owned;
+  char		*oldpwd;
+  char		*now;
+  int		print;
+
+  argc = my_tablen(command);
+  if (argc > 2)
+    return (cd_error(NULL, "cd: Too many arguments.\n"));
+  owned = NULL;
+  print = 0;
+  if (argc == 1 || my_strcmp_strict(command[1], "~") ||
+      my_strcmp_strict(command[1], "--"))
     {
-      if (cd_prev(env, &oldpwd))
-	return (-1);
+      owned = get_varenv(*env, "HOME");
+      if (!owned)
+	return (cd_error(NULL, "cd: HOME not set.\n"));
+      target = owned;
     }
-  else if (!(oldpwd = getcwd(buf, 100)) ||
-	   cd_basic(command, env))
-    return (1);
+  else if (my_strcmp_strict(command[1], "-"))
+    {
+      owned = get_varenv(*env, "OLDPWD");
+      if (!owned)
+	return (cd_error(NULL, "cd: OLDPWD not set.\n"));
+      target = owned;
+      print = 1;
+    }
+  else
+    target = command[1];
+  oldpwd = cwd_dup();
+  if (!oldpwd)
+    {
+      free(owned);
+      return (cd_error(NULL, "cd: Cannot determine current directory.\n"));
+    }
+  if (chdir(target) == -1)
+    {
+      free(owned);
+      free(oldpwd);
+      return (chdir_error(target));
+    }
+  now = cwd_dup();
+  if (!now || env_assign(env, "OLDPWD", oldpwd) == -1 ||
+      env_assign(env, "PWD", now) == -1)
+    {
+      free(owned);
+      free(oldpwd);
+      free(now);
+      return (1);
+    }
+  if (print &&
+      (write(1, now, (size_t)my_strlen(now)) == -1 || write(1, "\n", 1) == -1))
+    {
+      free(owned);
+      free(oldpwd);
+      free(now);
+      return (1);
+    }
+  free(owned);
+  free(oldpwd);
+  free(now);
   return (0);
 }

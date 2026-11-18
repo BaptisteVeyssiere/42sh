@@ -25,6 +25,7 @@ int	my_strcat(char *to, char *from)
       to[i] = from[j];
       i += 1;
     }
+  to[i] = '\0';
   return (0);
 }
 
@@ -57,26 +58,30 @@ int	my_tablen(char **tab)
 
 int	my_getnbr(char *str)
 {
-  int   i;
-  int   j;
-  int   limit;
-  int   nbr;
+  long		nbr;
+  int		sign;
+  int		i;
 
-  i = 0;
   nbr = 0;
-  limit = 0;
+  sign = 1;
+  i = 0;
+  if (!str || !str[0])
+    return (0);
   if (str[0] == '-')
-    limit = 1;
-  while (str[i] != 0)
-    i++;
-  i--;
-  j = 1;
-  while (i >= limit)
     {
-      nbr += j * (str[i--] - 48);
-      j *= 10;
+      sign = -1;
+      ++i;
     }
-  if (str[0] == '-')
-    nbr *= -1;
-  return (nbr);
+  if (str[i] < '0' || str[i] > '9')
+    return (0);
+  while (str[i] >= '0' && str[i] <= '9')
+    {
+      nbr = nbr * 10 + (str[i] - '0');
+      if (nbr > 2147483647)
+	return (0);
+      ++i;
+    }
+  if (str[i])
+    return (0);
+  return ((int)(sign * nbr));
 }

@@ -49,10 +49,13 @@ static int	get_alias_arg(char *str, int x, char **alias)
   while (str[++x] && (str[x] == ' ' || str[x] == '\t'));
   if (!str[x])
     return (0);
-  if (str[x] == '\'')
+  if (str[x] == '\'' || str[x] == '"')
     {
+      char	quote;
+
+      quote = str[x];
       save = x + 1;
-      while (str[++x] && str[x] != '\'');
+      while (str[++x] && str[x] != quote);
       if (!str[x])
 	return (0);
       if (cut_alias(str, save, x - 1, alias))
@@ -74,6 +77,7 @@ static void		create_alias(t_alias **list, char *alias, char *equivalent)
     return ;
   elem->alias = alias;
   elem->equivalent = equivalent;
+  elem->source = -1;
   elem->next = *list;
   *list = elem;
 }
@@ -98,7 +102,8 @@ static int	check_line(char *line, t_alias **list)
     return (free_errors(alias, equivalent));
   if ((x = get_alias_arg(line, x, &equivalent)) == 0)
     return (free_errors(alias, equivalent));
-  while (line[++x] == ' ' || line[x] == '\t');
+  while (line[x] == ' ' || line[x] == '\t')
+    ++x;
   if (line[x])
     return (free_errors(alias, equivalent));
   create_alias(list, alias, equivalent);

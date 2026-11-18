@@ -110,7 +110,11 @@ int	check_and_add_path(t_interpipe **command, char **env)
       if (command[i]->args[0][0] == '.' &&
 	  (!command[i]->args[0][1] ||
 	   (command[i]->args[0][1] == '.' && !command[i]->args[0][2])))
-	return (1);
+	{
+	  if (command_not_found(command[i]->args[0]) == -1)
+	    return (-1);
+	  return (1);
+	}
       if ((ret = check_if_directory(command[i]->args[0])))
 	return (ret);
       ret = check_if_builtin(command[i]->args[0]);

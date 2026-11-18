@@ -1,124 +1,278 @@
 /*
-** check_var.c for 42 in /home/semmao_i/rendu/PSU_2015_42sh/src
-**
-** Made by ilyas semmaoui
-** Login   <semmao_i@epitech.net>
-**
-** Started on  Thu Jun  2 10:47:20 2016 ilyas semmaoui
-** Last update Sat Jun  4 17:00:58 2016 Baptiste veyssiere
+** Expand $VAR, ${VAR} and $? and strip quotes from one word.
 */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
 
-static char	*my_realloc(char *str1, char *str2)
+static int	grow(char **buf, int *len, int *cap, char ch)
+{
+  char		*next;
+  int		size;
+
+  if (*len + 2 <= *cap)
+    {
+      (*buf)[(*len)++] = ch;
+      (*buf)[*len] = '\0';
+      return (0);
+    }
+  size = (*cap > 0) ? (*cap * 2) : 32;
+  next = malloc((size_t)size);
+  if (!next)
+    return (-1);
+  if (*buf && *len)
+    {
+      int	i;
+
+      i = -1;
+      while (++i < *len)
+	next[i] = (*buf)[i];
+    }
+  free(*buf);
+  *buf = next;
+  *cap = size;
+  (*buf)[(*len)++] = ch;
+  (*buf)[*len] = '\0';
+  return (0);
+}
+
+static int	grow_str(char **buf, int *len, int *cap, const char *add)
 {
   int		i;
-  int		j;
-  int		len;
-  int		size;
-  char		*new;
 
-  len = my_strlen(str2);
-  size = my_strlen(str1);
+  if (!add)
+    return (0);
   i = -1;
-  if ((new = malloc(sizeof(char) * (len + size + 2))) == NULL)
-    return (NULL);
-  while (str2[++i])
-    new[i] = str2[i];
-  j = i;
-  new[i] = str1[i - j];
-  while (str1 && str1[++i - j])
-    new[i] = str1[i - j];
-  new[i] = '\0';
-  free(str2);
-  free(str1);
-  return (new);
+  while (add[++i])
+    if (grow(buf, len, cap, add[i]) == -1)
+      return (-1);
+  return (0);
 }
 
-static int	check_last_value(char **env, t_var *var, int last_value)
+static int	name_char(char c, int first)
 {
-  if (my_strcmp_strict(var->tmp, "?") == 1)
+  if (c == '_' || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+    return (1);
+  if (!first && c >= '0' && c <= '9')
+    return (1);
+  return (0);
+}
+
+static int	append_value(char **buf, int *len, int *cap,
+			     char **env, const char *name)
+{
+  char		*value;
+
+  value = get_varenv(env, (char *)name);
+  if (!value)
     {
-      if ((var->var = my_getstr(last_value)) == NULL)
-	return (-1);
-    }
-  else if (--var->n && (var->var = get_varenv(env, var->tmp)) == NULL)
-    {
-      if (write(2, var->tmp, my_strlen(var->tmp)) == -1 ||
+      if (write(2, name, (size_t)my_strlen((char *)name)) == -1 ||
 	  write(2, ": Undefined variable.\n", 22) == -1)
 	return (-1);
-      free(var->tmp);
-      free(var->command);
+      return (1);
+    }
+  if (grow_str(buf, len, cap, value) == -1)
+    {
+      free(value);
       return (-1);
     }
+  free(value);
   return (0);
 }
 
-static int	swap_var(char **line, char **env, t_var *var, int last_value)
+static int	expand_dollar(const char *word, int *index, char **buf,
+			      int *len, int *cap, char **env, int status)
 {
-  var->start = var->i;
-  while ((*line)[++var->i] && (*line)[var->i] != '$');
-  if ((var->n = var->start) == var->start && var->i - var->start < 2)
-    {
-      free(var->command);
-      return (-1);
-    }
-  if (--var->i && (var->tmp = malloc(var->i - var->start + 1)) == NULL)
-    return (-1);
-  while ((*line)[++var->n] && (*line)[var->n] != '$')
-    var->tmp[var->n - (var->start + 1)] = (*line)[var->n];
-  var->tmp[var->n - (var->start + 1)] = '\0';
-  if (check_last_value(env, var, last_value) == -1)
-    return (-1);
-  free(var->tmp);
-  if ((var->command = my_realloc(var->command, var->var)) == NULL)
-    return (-1);
-  return (0);
-}
+  int		start;
+  int		end;
+  char		*name;
+  char		*rendered;
+  int		ret;
+  int		i;
 
-static int	change_var(char **line, char **env, int last_value)
-{
-  t_var		var;
-
-  var.i = -1;
-  var.n = -1;
-  if ((var.command = malloc(my_strlen(*line) + 1)) == NULL)
-    return (-1);
-  while (++var.i <= my_strlen(*line))
-    var.command[var.i] = 0;
-  var.i = -1;
-  while (*line && (*line)[++var.i])
+  ++(*index);
+  if (word[*index] == '?')
     {
-      if ((*line)[var.i] == '$')
+      rendered = my_getstr(status);
+      if (!rendered || grow_str(buf, len, cap, rendered) == -1)
 	{
-	  if (swap_var(line, env, &var, last_value) == -1)
+	  free(rendered);
+	  return (-1);
+	}
+      free(rendered);
+      ++(*index);
+      return (0);
+    }
+  if (word[*index] == '{')
+    {
+      start = ++(*index);
+      while (word[*index] && word[*index] != '}')
+	++(*index);
+      if (word[*index] != '}')
+	{
+	  write(2, "Bad substitution.\n", 18);
+	  return (1);
+	}
+      end = *index;
+      ++(*index);
+    }
+  else if (name_char(word[*index], 1))
+    {
+      start = *index;
+      while (name_char(word[*index], 0))
+	++(*index);
+      end = *index;
+    }
+  else
+    {
+      if (grow(buf, len, cap, '$') == -1)
+	return (-1);
+      return (0);
+    }
+  name = malloc((size_t)(end - start) + 1);
+  if (!name)
+    return (-1);
+  i = 0;
+  while (start < end)
+    name[i++] = word[start++];
+  name[i] = '\0';
+  if (!name[0])
+    {
+      free(name);
+      write(2, "Bad substitution.\n", 18);
+      return (1);
+    }
+  ret = append_value(buf, len, cap, env, name);
+  free(name);
+  return (ret);
+}
+
+int	expand_token(char **token, char **env, int status, int do_expand)
+{
+  char		*buf;
+  int		len;
+  int		cap;
+  int		i;
+  char		quote;
+  int		pending;
+  int		ret;
+
+  if (!token || !*token)
+    return (0);
+  buf = NULL;
+  len = 0;
+  cap = 0;
+  i = 0;
+  quote = 0;
+  pending = 0;
+  while ((*token)[i])
+    {
+      if (pending)
+	{
+	  if (grow(&buf, &len, &cap, (*token)[i]) == -1)
 	    return (-1);
+	  pending = 0;
+	  ++i;
+	  continue;
 	}
-      else
+      if (quote == '\'')
 	{
-	  var.command[++var.n] = (*line)[var.i];
-	  var.command[var.n + 1] = '\0';
+	  if ((*token)[i] == '\'')
+	    quote = 0;
+	  else if (grow(&buf, &len, &cap, (*token)[i]) == -1)
+	    return (-1);
+	  ++i;
+	  continue;
 	}
+      if (quote == '"')
+	{
+	  if ((*token)[i] == '\\' && (*token)[i + 1])
+	    pending = 1;
+	  else if ((*token)[i] == '"')
+	    quote = 0;
+	  else if (do_expand && (*token)[i] == '$')
+	    {
+	      ret = expand_dollar(*token, &i, &buf, &len, &cap, env, status);
+	      if (ret)
+		{
+		  free(buf);
+		  return (ret);
+		}
+	      continue;
+	    }
+	  else if (grow(&buf, &len, &cap, (*token)[i]) == -1)
+	    return (-1);
+	  ++i;
+	  continue;
+	}
+      if ((*token)[i] == '\\' && (*token)[i + 1])
+	{
+	  pending = 1;
+	  ++i;
+	  continue;
+	}
+      if ((*token)[i] == '\'' || (*token)[i] == '"')
+	{
+	  quote = (*token)[i];
+	  ++i;
+	  continue;
+	}
+      if (do_expand && (*token)[i] == '$')
+	{
+	  ret = expand_dollar(*token, &i, &buf, &len, &cap, env, status);
+	  if (ret)
+	    {
+	      free(buf);
+	      return (ret);
+	    }
+	  continue;
+	}
+      if (grow(&buf, &len, &cap, (*token)[i]) == -1)
+	return (-1);
+      ++i;
     }
-  free(*line);
-  *line = var.command;
+  if (!buf)
+    {
+      buf = malloc(1);
+      if (!buf)
+	return (-1);
+      buf[0] = '\0';
+    }
+  free(*token);
+  *token = buf;
   return (0);
 }
 
 int	check_var(t_interpipe **command, char **env, int last_value)
 {
-  int	i;
-  int	j;
+  int		i;
+  int		j;
+  int		ret;
 
   i = -1;
-  while (command && command[++i] != NULL)
+  while (command && command[++i])
     {
+      if (command[i]->input_file)
+	{
+	  ret = expand_token(&command[i]->input_file, env, last_value,
+			     command[i]->if_double_left ? 0 : 1);
+	  if (ret)
+	    return (ret);
+	}
+      if (command[i]->output_file)
+	{
+	  ret = expand_token(&command[i]->output_file, env, last_value, 1);
+	  if (ret)
+	    return (ret);
+	}
       j = -1;
       while (command[i]->args && command[i]->args[++j])
-	if (change_var(&(command[i]->args[j]), env, last_value) == -1)
-	  return (-1);
+	{
+	  ret = expand_token(&command[i]->args[j], env, last_value, 1);
+	  if (ret)
+	    return (ret);
+	}
     }
   return (0);
 }

@@ -1,22 +1,33 @@
 /*
-** exit.c for mysh in /home/VEYSSI_B/rendu/Programmation_Shell/PSU_2015_minishell2
-**
-** Made by Baptiste veyssiere
-** Login   <VEYSSI_B@epitech.net>
-**
-** Started on  Wed Mar 30 16:35:16 2016 Baptiste veyssiere
-** Last update Wed Jun  1 09:50:54 2016 Baptiste veyssiere
+** exit builtin. A valid exit is recorded and honored by the main loop
+** after the current command, so later commands in the same line do not run
+** and allocated state can be freed. In a forked pipeline the child process
+** exits immediately from do_instruction.
 */
 
-#include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
+
+static int	g_do_exit = 0;
+static int	g_exit_code = 0;
+
+int	shell_should_exit(void)
+{
+  return (g_do_exit);
+}
+
+int	shell_exit_code(void)
+{
+  return (g_exit_code);
+}
 
 static int	check_formation(char *str)
 {
   int		i;
 
   i = -1;
+  if (!str[0])
+    return (-1);
   while (str[++i])
     {
       if (str[i] > '9' || str[i] < '0')
@@ -25,6 +36,8 @@ static int	check_formation(char *str)
 	    return (-1);
 	}
     }
+  if (str[0] == '-' && !str[1])
+    return (-1);
   return (0);
 }
 
@@ -39,9 +52,9 @@ static int	error_exit(char **command)
 
 int	exit_builtin(char ***env, char **command)
 {
-  int	nbr;
+  int		nbr;
 
-  env = env;
+  (void)env;
   if (!command[1])
     nbr = 0;
   else
@@ -50,5 +63,9 @@ int	exit_builtin(char ***env, char **command)
 	return (1);
       nbr = my_getnbr(command[1]);
     }
+  if (g_interactive && write(1, "exit\n", 5) == -1)
+    return (1);
+  g_do_exit = 1;
+  g_exit_code = nbr;
   return (nbr);
 }

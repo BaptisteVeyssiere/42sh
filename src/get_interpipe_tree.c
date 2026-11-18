@@ -20,7 +20,7 @@ static int	get_interpipe_nbr(char *command)
   i = -1;
   nbr = 0;
   while (command[++i])
-    if (command[i] == '|')
+    if (is_pipe(command, i))
       ++nbr;
   return (nbr);
 }
@@ -32,7 +32,7 @@ static int	get_interpipe_length(char *command, int pos)
 
   length = 0;
   i = pos;
-  while (command[++i] && command[i] != '|')
+  while (command[++i] && !is_pipe(command, i))
     ++length;
   if (i > 0 && (command[i - 1] == ' ' || command[i - 1] == '\t'))
     --length;
