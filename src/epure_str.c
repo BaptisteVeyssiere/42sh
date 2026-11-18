@@ -1,62 +1,48 @@
 /*
-** epure_str.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
-**
-** Made by Baptiste veyssiere
-** Login   <VEYSSI_B@epitech.net>
-**
-** Started on  Wed May 25 17:52:01 2016 Baptiste veyssiere
-** Last update Sun Jun  5 17:47:38 2016 Baptiste veyssiere
+** Trim and collapse whitespace that is not quoted or escaped.
 */
 
-#include <unistd.h>
 #include <stdlib.h>
 #include "mysh.h"
 
-static int	get_epure_length(char *str)
+static int	blank_syntax(const char *str, int index)
 {
-  int		length;
-  int		i;
-
-  if (!str)
-    return (0);
-  length = 0;
-  i = -1;
-  while (str[++i] && (str[i] == ' ' || str[i] == '\t'));
-  if (!str[i])
-    return (0);
-  --i;
-  while (str[++i])
-    if ((str[i] != ' ' && str[i] != '\t') ||
-	((str[i] == ' ' || str[i] == '\t') &&
-	 str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t'))
-      ++length;
-  return (length);
+  return ((str[index] == ' ' || str[index] == '\t') &&
+	  syntactic(str, index));
 }
 
 char	*epure_str(char *str)
 {
-  int	epure_length;
-  char	*epure;
-  int	i;
-  int	j;
+  char		*out;
+  int		i;
+  int		j;
+  int		pending;
 
-  epure = NULL;
-  epure_length = get_epure_length(str);
-  if (!str || !(epure = malloc(epure_length + 1)))
+  if (!str)
     return (NULL);
-  i = -1;
-  while (++i <= epure_length)
-    epure[i] = 0;
-  i = -1;
-  j = -1;
-  while (str[++i] && (str[i] == ' ' || str[i] == '\t'));
-  if (!str[i])
-    return (epure);
-  --i;
-  while (str[++i])
-    if ((str[i] != ' ' && str[i] != '\t') ||
-        ((str[i] == ' ' || str[i] == '\t') &&
-         str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t'))
-      epure[++j] = str[i];
-  return (epure);
+  out = malloc((size_t)my_strlen(str) + 1);
+  if (!out)
+    return (NULL);
+  i = 0;
+  while (str[i] && blank_syntax(str, i))
+    ++i;
+  j = 0;
+  pending = 0;
+  while (str[i])
+    {
+      if (blank_syntax(str, i))
+	{
+	  pending = 1;
+	  ++i;
+	  continue;
+	}
+      if (pending)
+	{
+	  out[j++] = ' ';
+	  pending = 0;
+	}
+      out[j++] = str[i++];
+    }
+  out[j] = '\0';
+  return (out);
 }

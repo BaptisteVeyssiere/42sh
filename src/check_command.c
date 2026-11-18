@@ -8,6 +8,7 @@
 ** Last update Sun Jun  5 18:43:07 2016 ilyas semmaoui
 */
 
+#include <stdlib.h>
 #include <unistd.h>
 #include "mysh.h"
 
@@ -73,17 +74,42 @@ static int	check_command_loop(char *command)
 
 int	check_command(char *command)
 {
+  char	*masked;
   int	error;
+  int	quote;
 
-  if ((error = check_command_loop(command)))
+  quote = quote_error(command);
+  if (quote == 1)
     {
-      if (error == 1 && write(2, "Invalid null command.\n", 22) == -1)
+      write(2, "Unmatched quote.\n", my_strlen("Unmatched quote.\n"));
+      return (1);
+    }
+  if (quote == 2)
+    {
+      write(2, "Trailing backslash.\n", my_strlen("Trailing backslash.\n"));
+      return (1);
+    }
+  if (!(masked = mask_quoted_operators(command)))
+    return (-1);
+  error = check_command_loop(masked);
+  free(masked);
+  if (error)
+    {
+      if (error == 1 &&
+	  write(2, "Invalid null command.\n",
+		my_strlen("Invalid null command.\n")) == -1)
 	return (-1);
-      if (error == 2 && write(2, "Missing name for redirect.\n", 28) == -1)
+      if (error == 2 &&
+	  write(2, "Missing name for redirect.\n",
+		my_strlen("Missing name for redirect.\n")) == -1)
 	return (-1);
-      if (error == 3 && write(2, "Ambiguous output redirect.\n", 27) == -1)
+      if (error == 3 &&
+	  write(2, "Ambiguous output redirect.\n",
+		my_strlen("Ambiguous output redirect.\n")) == -1)
 	return (-1);
-      if (error == 4 && write(2, "Ambiguous input redirect.\n", 26) == -1)
+      if (error == 4 &&
+	  write(2, "Ambiguous input redirect.\n",
+		my_strlen("Ambiguous input redirect.\n")) == -1)
 	return (-1);
       return (1);
     }

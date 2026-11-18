@@ -1,0 +1,10 @@
+42sh
+obj/
+*.o
+*.d
+*~
+*.swp
+.DS_Store
+.42sh_history*
+*.log
+tests/tmp/

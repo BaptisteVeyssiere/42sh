@@ -1,79 +1,82 @@
 /*
-** do_instruction.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
-**
-** Made by Baptiste veyssiere
-** Login   <VEYSSI_B@epitech.net>
-**
-** Started on  Sun May 29 01:43:17 2016 Baptiste veyssiere
-** Last update Thu Jun  9 00:36:08 2016 Baptiste veyssiere
+** Child-side execution: redirections, builtins, then execve.
 */
 
 #include <unistd.h>
-#include <sys/wait.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <string.h>
 #include "mysh.h"
 
-static int	change_fd_on(int *fd_input, int *fd_output,
-			     t_command *command, int i)
+static int	change_fd_on(t_command *command, int i)
 {
   if (command->command[i]->fd_input != 0)
     {
-      if ((*fd_input = dup(0)) == -1 || close(0) == -1 ||
-          dup(command->command[i]->fd_input) == -1)
+      if (close(0) == -1 || dup(command->command[i]->fd_input) == -1)
 	return (-1);
     }
   if (command->command[i]->fd_output != 1)
     {
-      if ((*fd_output = dup(1)) == -1 ||
-          close(1) == -1 ||
-          dup(command->command[i]->fd_output)  == -1)
-        return (-1);
+      if (close(1) == -1 || dup(command->command[i]->fd_output) == -1)
+	return (-1);
     }
-  if (*fd_input == -1 || *fd_output == -1)
-    return (-1);
   return (0);
 }
 
-static int	exec_instruction(char if_builtin,
-				 t_interpipe *command, t_datas *data)
+static void	exec_error(char *path)
 {
-  int		ret;
+  const char	*msg;
+  int		code;
 
-  if (if_builtin)
+  if (errno == ENOENT)
     {
-	if ((ret = exec_builtins(command->args, &data->env, data)))
-	  return (ret);
-      exit (EXIT_SUCCESS);
+      msg = ": Command not found.\n";
+      code = 127;
     }
-  else if (execve(command->args[0],
-		  command->args, data->env) == -1)
+  else if (errno == EACCES)
     {
-      if (my_int_perror(command->args[0], 0) ||
-	  my_int_perror(": Exec format error. Binary file not executable.\n", 0))
-	exit(-1);
-      exit(1);
+      msg = ": Permission denied.\n";
+      code = 126;
     }
-  return (EXIT_SUCCESS);
+  else if (errno == ENOEXEC)
+    {
+      msg = ": Exec format error. Binary file not executable.\n";
+      code = 126;
+    }
+  else
+    {
+      msg = ": ";
+      write(2, path, (size_t)my_strlen(path));
+      write(2, msg, 2);
+      msg = strerror(errno);
+      write(2, msg, (size_t)my_strlen((char *)msg));
+      write(2, "\n", 1);
+      exit(126);
+    }
+  write(2, path, (size_t)my_strlen(path));
+  write(2, msg, (size_t)my_strlen((char *)msg));
+  exit(code);
 }
 
 int	do_instruction(t_command *and_or, int i, t_datas *data)
 {
-  char  builtin;
-  int   fd_input;
-  int   fd_output;
+  int		ret;
 
-  fd_input = -2;
-  fd_output = -2;
-  if (and_or->command[i]->if_double_left)
-    if (double_left_red(and_or->command[i]) == -1)
-      return (-1);
-  if (change_fd_on(&fd_input, &fd_output, and_or, i) == -1)
-    return (-1);
-  builtin = 0;
-  if (my_strcmp_strict(and_or->command[i]->args[0], "env") ||
-      my_strcmp_strict(and_or->command[i]->args[0], "echo") ||
-      (my_strcmp_strict(and_or->command[i]->args[0], "setenv") &&
-       !(and_or->command[i]->args[1])))
-    builtin = 1;
-  return (exec_instruction(builtin, and_or->command[i], data));
+  if (change_fd_on(and_or, i) == -1)
+    return (1);
+  if (is_shell_builtin(and_or->command[i]->args[0]))
+    {
+      ret = exec_builtins(and_or->command[i]->args, &data->env, data);
+      if (shell_should_exit())
+	return (shell_exit_code());
+      return (ret < 0 ? 1 : ret);
+    }
+  if (!and_or->command[i]->args[0][0])
+    {
+      write(2, ": Command not found.\n", 21);
+      return (127);
+    }
+  execve(and_or->command[i]->args[0], and_or->command[i]->args, data->env);
+  exec_error(and_or->command[i]->args[0]);
+  return (127);
 }

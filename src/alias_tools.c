@@ -9,6 +9,7 @@
 */
 
 #include <stdlib.h>
+#include <unistd.h>
 #include "mysh.h"
 
 int	alias_length(char *str)
@@ -43,6 +44,8 @@ void	free_alias(t_alias *list)
     {
       tmp = list;
       list = list->next;
+      if (tmp->source >= 0)
+	close(tmp->source);
       free(tmp->alias);
       free(tmp->equivalent);
       free(tmp);
@@ -53,8 +56,13 @@ int	cut_alias(char *str, int save, int to, char **alias)
 {
   int	x;
 
-  if (to - save < 1)
-    return (1);
+  if (to < save)
+    {
+      if ((*alias = malloc(1)) == NULL)
+	return (1);
+      (*alias)[0] = '\0';
+      return (0);
+    }
   if ((*alias = malloc(to - save + 2)) == NULL)
     return (1);
   x = -1;

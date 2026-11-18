@@ -92,7 +92,11 @@ typedef struct		s_datas
   t_history		*history;
   int			tmp;
   t_alias		*alias;
+  int			last_status;
 }			t_datas;
+
+extern int		ctrc;
+extern int		g_interactive;
 
 typedef struct		s_tree
 {
@@ -278,7 +282,7 @@ char	*my_malloc(int);
 */
 t_history	*load_history(t_datas *, char *, char *, t_history *);
 int		save_in_file(t_datas *, char *);
-t_history	*add_a_command(t_history *, char *);
+int		add_a_command(t_history **, char *);
 int		get_file_descriptor(char *, char *, char *);
 int		free_history(t_history *);
 
@@ -323,6 +327,7 @@ int	match(char, char*);
 ** check_var.c
 */
 int	check_var(t_interpipe**, char**, int);
+int	expand_token(char **, char **, int, int);
 
 /*
 ** my_getstr.c
@@ -366,6 +371,28 @@ int	check_dir_permission(char*, char);
 ** main.c
 */
 void	handler(int);
+
+/*
+** syntax.c
+*/
+int	syntactic(const char *, int);
+int	quote_error(const char *);
+int	is_and_if(const char *, int);
+int	is_or_if(const char *, int);
+int	is_pipe(const char *, int);
+int	word_end(const char *, int);
+char	*mask_quoted_operators(const char *);
+
+/*
+** exit.c
+*/
+int	shell_should_exit(void);
+int	shell_exit_code(void);
+
+/*
+** builtins.c
+*/
+int	is_shell_builtin(char *);
 
 /*
 ** alias_tools_bis.c

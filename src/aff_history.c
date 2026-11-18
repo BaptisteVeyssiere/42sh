@@ -13,29 +13,57 @@
 #include	<unistd.h>
 #include	"mysh.h"
 
+static int	digits_only(const char *str)
+{
+  int		i;
+
+  if (!str || !str[0])
+    return (0);
+  i = -1;
+  while (str[++i])
+    if (str[i] < '0' || str[i] > '9')
+      return (0);
+  return (1);
+}
+
 int		ret_history(t_datas *data, t_history *history, char *str)
 {
-  int		nb;
-  int		i;
+  int		count;
+  int		index;
+  int		number;
   t_history	*tmp;
+  char		*spec;
 
-  str += 1;
-  i = 0;
+  if (!str || str[0] != '!')
+    return (my_int_perror("Event not found\n", 1));
+  spec = str + 1;
+  count = 0;
   tmp = history;
-  if (str != 0)
+  while (tmp != NULL)
     {
-      nb = my_getnbr(str);
-      while (tmp != NULL && i != nb)
-	{
-	  tmp = tmp->next;
-	  i += 1;
-	}
-      if (i != nb || tmp == NULL)
-	return (my_int_perror("Event not found\n", 0));
-      if ((execute_command(data, tmp->command)) == -1)
-	return (my_int_perror("Failed to exec function\n", -1));
+      ++count;
+      tmp = tmp->next;
     }
-  return (0);
+  if (!count)
+    return (my_int_perror("Event not found\n", 1));
+  if ((spec[0] == '!' && spec[1] == '\0') || spec[0] == '\0')
+    index = count;
+  else if (digits_only(spec))
+    index = my_getnbr(spec);
+  else
+    return (my_int_perror("Event not found\n", 1));
+  if (index < 1 || index > count)
+    return (my_int_perror("Event not found\n", 1));
+  tmp = history;
+  number = count;
+  while (tmp != NULL && number != index)
+    {
+      tmp = tmp->next;
+      --number;
+    }
+  if (tmp == NULL)
+    return (my_int_perror("Event not found\n", 1));
+  return (execute_command(data, tmp->command));
 }
 
 int		aff_history(t_history *history)

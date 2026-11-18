@@ -68,10 +68,12 @@ int	free_pid(int *pid)
 
 void	free_all(t_datas *data, char **prompt)
 {
-  free_prompt(prompt);
+  if (prompt)
+    free_prompt(prompt);
   free_alias(data->alias);
   free_history(data->history);
-  close(data->fd);
+  if (data->fd >= 0)
+    close(data->fd);
   free(data->home);
   free_env(data->env);
 }

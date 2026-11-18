@@ -18,7 +18,7 @@ t_alias		*manage_ret(t_alias *old, t_alias *alias, int fd)
     return (old);
   else if (old)
     {
-      if (close(old->source) == -1)
+      if (old->source >= 0 && close(old->source) == -1)
 	return (NULL);
       free_alias(old);
     }

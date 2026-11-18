@@ -1,86 +1,86 @@
 /*
-** get_redirect_files.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
-**
-** Made by Baptiste veyssiere
-** Login   <VEYSSI_B@epitech.net>
-**
-** Started on  Sat May 28 00:11:16 2016 Baptiste veyssiere
-** Last update Sat Jun  4 17:12:09 2016 Baptiste veyssiere
+** Detach redirection operators from a simple command.
+** The operator and its word are blanked so the later word split keeps
+** only the argv. Quoted blanks belong to the filename.
 */
 
 #include <stdlib.h>
-#include <unistd.h>
 #include "mysh.h"
 
-static void	get_redirect_type(t_interpipe *interpipe, char *command)
+static char	*dup_span(const char *str, int start, int end)
 {
+  char		*name;
   int		i;
 
-  i = -1;
-  while (command[++i] && command[i] != '>' && command[i] != '<');
-  if (!command[i])
-    return ;
-  if (command[i] == '>' && command[i + 1] == '>')
-    interpipe->if_double_right = 1;
-  else if (command[i] == '>' && command[i + 1] != '>')
-    interpipe->right_red = 1;
-  else if (command[i] == '<' && command[i + 1] == '<')
-    interpipe->if_double_left = 1;
-  else if (command[i] == '<' && command[i + 1] != '<')
-    interpipe->left_red = 1;
-}
-
-static int	get_redirect_length(char *str, int i)
-{
-  int		length;
-
-  length = 0;
-  while (str[++i] && str[i] != ' ')
-    ++length;
-  return (length);
-}
-
-char	*get_redirect_name(char *str, char mode)
-{
-  int	i;
-  int	j;
-  int	length;
-  char	*name;
-
-  i = -1;
-  while (str[++i] && str[i] != mode);
-  --i;
-  while (str[++i] && (str[i] == mode || str[i] == ' '))
-    str[i] = ' ';
-  --i;
-  length = get_redirect_length(str, i);
-  if (!(name = malloc(length + 1)))
+  name = malloc((size_t)(end - start) + 1);
+  if (!name)
     return (NULL);
-  name[length] = 0;
-  j = -1;
-  while (++j < length)
-    {
-      name[j] = str[++i];
-      str[i] = ' ';
-    }
+  i = 0;
+  while (start < end)
+    name[i++] = str[start++];
+  name[i] = '\0';
   return (name);
+}
+
+static void	blank_span(char *str, int start, int end)
+{
+  while (start < end)
+    str[start++] = ' ';
+}
+
+static int	store_redirect(t_interpipe *command, char *name,
+			       int input, int doubled)
+{
+  if (input)
+    {
+      free(command->input_file);
+      command->input_file = name;
+      command->left_red = doubled ? 0 : 1;
+      command->if_double_left = doubled ? 1 : 0;
+    }
+  else
+    {
+      free(command->output_file);
+      command->output_file = name;
+      command->right_red = doubled ? 0 : 1;
+      command->if_double_right = doubled ? 1 : 0;
+    }
+  return (0);
 }
 
 int	get_redirect_files(t_interpipe *interpipe, char *command)
 {
-  get_redirect_type(interpipe, command);
-  if (((interpipe->left_red || interpipe->if_double_left) &&
-       !(interpipe->input_file = get_redirect_name(command, '<'))) ||
-      ((interpipe->right_red || interpipe->if_double_right) &&
-       !(interpipe->output_file = get_redirect_name(command, '>'))))
-    return (-1);
-  get_redirect_type(interpipe, command);
-  if ((interpipe->input_file == NULL &&
-       (interpipe->left_red || interpipe->if_double_left) &&
-       !(interpipe->input_file = get_redirect_name(command, '<'))) ||
-      (interpipe->output_file == NULL &&
-       (interpipe->right_red || interpipe->if_double_right) &&
-       !(interpipe->output_file = get_redirect_name(command, '>'))))
-    return (-1);
+  int		i;
+  int		start;
+  int		end;
+  int		doubled;
+  char		*name;
+
+  i = 0;
+  while (command[i])
+    {
+      if ((command[i] == '<' || command[i] == '>') && syntactic(command, i))
+	{
+	  doubled = 0;
+	  if (command[i + 1] == command[i] && syntactic(command, i + 1))
+	    doubled = 1;
+	  start = i + doubled + 1;
+	  while (command[start] &&
+		 (command[start] == ' ' || command[start] == '\t') &&
+		 syntactic(command, start))
+	    ++start;
+	  if (!command[start])
+	    return (-1);
+	  end = word_end(command, start);
+	  name = dup_span(command, start, end);
+	  if (!name)
+	    return (-1);
+	  store_redirect(interpipe, name, command[i] == '<', doubled);
+	  blank_span(command, i, end);
+	  i = end;
+	  continue;
+	}
+      ++i;
+    }
   return (0);
 }

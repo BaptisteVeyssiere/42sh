@@ -20,7 +20,7 @@ static int	get_semicolon_nbr(char *command)
   i = -1;
   nbr = 0;
   while (command[++i])
-    if (command[i] == ';')
+    if (command[i] == ';' && syntactic(command, i))
       ++nbr;
   return (nbr);
 }
@@ -32,7 +32,7 @@ static int	get_command_length(char *command, int pos)
 
   length = 0;
   i = pos;
-  while (command[++i] && command[i] != ';')
+  while (command[++i] && !(command[i] == ';' && syntactic(command, i)))
     ++length;
   if (i > 0 && (command[i - 1] == ' ' || command[i - 1] == '\t'))
     --length;

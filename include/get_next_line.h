@@ -16,5 +16,6 @@
 # endif /* !READ_SIZE */
 
 char	*get_next_line(const int);
+void	get_next_line_clear(void);
 
 #endif /* !GET_NEXT_LINE */

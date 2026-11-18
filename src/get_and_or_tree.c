@@ -20,8 +20,7 @@ static int	get_and_or_nbr(char *command)
   i = -1;
   nbr = 0;
   while (command[++i])
-    if ((command[i] == '|' && command[i + 1] == '|') ||
-	(command[i] == '&' && command[i + 1] == '&'))
+    if (is_or_if(command, i) || is_and_if(command, i))
       ++nbr;
   return (nbr);
 }
@@ -33,9 +32,7 @@ static int	get_and_or_length(char *command, int pos)
 
   length = 0;
   i = pos;
-  while (command[++i] &&
-	 (command[i] != '|' || command[i + 1] != '|') &&
-	 (command[i] != '&' || command[i + 1] != '&'))
+  while (command[++i] && !is_or_if(command, i) && !is_and_if(command, i))
     ++length;
   if (i > 0 && (command[i - 1] == ' ' || command[i - 1] == '\t'))
     --length;

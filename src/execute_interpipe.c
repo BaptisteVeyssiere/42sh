@@ -1,113 +1,123 @@
 /*
-** execute_interpipe.c for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
-**
-** Made by Baptiste veyssiere
-** Login   <VEYSSI_B@epitech.net>
-**
-** Started on  Sun May 29 01:09:08 2016 Baptiste veyssiere
-** Last update Sun Jun  5 15:15:48 2016 vigner_g
+** Run one and/or component, forking a process per pipeline stage.
+** State-changing builtins stay in the shell only when they are alone.
 */
 
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include "mysh.h"
 
-static int	pipe_fd(t_command *command, int **fildes, int i)
+static int	close_pipes(int (*pipes)[2], int count)
 {
-  if (command->command[i]->prev)
+  int		i;
+
+  i = -1;
+  while (++i < count)
     {
-      if (dup2(fildes[i - 1][0], 0) == -1)
-	return (my_int_perror("Error while using dup2 function.\n", -1));
-      if (close(fildes[i - 1][1]) == -1)
-	return (-1);
-    }
-  if (command->command[i]->pipe)
-    {
-      if (dup2(fildes[i][1], 1) == -1)
-        return (my_int_perror("Error while using dup2 function.\n", -1));
+      if (pipes[i][0] > 2)
+	close(pipes[i][0]);
+      if (pipes[i][1] > 2)
+	close(pipes[i][1]);
     }
   return (0);
 }
 
-static int	wait_loop(t_interpipe *command, int *ret, int pid)
+static void	child_setup(int (*pipes)[2], int count, int index)
 {
-  int		status;
+  int		i;
 
-  if (is_builtin(command, 1) == 1)
+  if (index > 0 && dup2(pipes[index - 1][0], 0) == -1)
+    exit(1);
+  if (index < count && dup2(pipes[index][1], 1) == -1)
+    exit(1);
+  i = -1;
+  while (++i < count)
     {
-      if ((status = check_status(pid, ret)))
-	return (status);
+      close(pipes[i][0]);
+      close(pipes[i][1]);
     }
-  return (0);
 }
 
-static int	process_not_builtin(int *pid, t_command *and_or,
-				    int **fildes, t_datas *data)
-{
-  if ((pid[I] = fork()) == -1)
-    return (my_int_perror("Error while using fork function.\n", -1));
-  if (pid[I] == 0 && pipe_fd(and_or, fildes, I) == -1)
-    return (-1);
-  if (pid[I] == 0)
-    exit(do_instruction(and_or, I, data));
-  if ((and_or->command[I]->pipe && close(fildes[I][1]) == -1) ||
-      (and_or->command[I]->prev && close(fildes[I - 1][0]) == -1))
-    return (my_int_perror("Error while using close function.\n", -1));
-  return (0);
-}
-
-static int	execute_loop(t_command *and_or,
-			     int **fildes, int *pid, t_datas *data)
+static int	wait_children(int *pid, int count, int fallback)
 {
   int		i;
   int		ret;
 
-  ret = 0;
-  i = and_or->pipe_nbr + 1;
-  if (and_or->pipe_nbr > 0 && pipe(fildes[and_or->pipe_nbr - 1]) == -1)
-    return (my_int_perror("Error while using pipe function.\n", -1));
-  while (--i >= 0)
+  ret = fallback;
+  i = -1;
+  while (++i < count)
     {
-      data->tmp = i;
-      if (and_or->command[i]->prev && i < and_or->pipe_nbr &&
-	  pipe(fildes[i - 1]) == -1)
-	return (my_int_perror("Error while using pipe function.\n", -1));
-      if (is_builtin(and_or->command[i], 0) == 1)
-	  ret = exec_builtins(and_or->command[i]->args, &data->env, data);
-      else if (is_builtin(and_or->command[i], 0) != 1)
-	if (process_not_builtin(pid, and_or, fildes, data) == -1)
-	  return (-1);
+      if (pid[i] > 0 && check_status(pid[i], &ret) == -1)
+	return (-1);
     }
-  while (++i <= and_or->pipe_nbr)
-    if (wait_loop(and_or->command[i], &ret, pid[i]) == -1)
-      return (-1);
   return (ret);
+}
+
+static int	run_parent(t_command *and_or, t_datas *data)
+{
+  return (exec_builtins(and_or->command[0]->args, &data->env, data));
 }
 
 int	execute_interpipe(t_command *and_or, t_datas *data)
 {
-  int	i;
-  int   **fildes;
-  int   *pid;
-  int	ret;
+  int		count;
+  int		pipes_n;
+  int		(*pipes)[2];
+  int		*pid;
+  int		i;
+  int		ret;
 
-  if ((i = -1) == -1 && (((and_or->pipe_nbr &&
-        !(fildes = malloc(sizeof(int*) * and_or->pipe_nbr)))) ||
-			 !(pid = malloc(sizeof(int) * (and_or->pipe_nbr + 1)))))
-    return (-1);
-  while (++i < and_or->pipe_nbr)
-    if ((fildes[i] = malloc(sizeof(int) * 2)) == NULL)
-      return (-1);
-  if ((i = -1) == -1 && ((ret = execute_loop(and_or, fildes, pid, data)) == -1
-			 || and_or->pipe_nbr))
+  count = and_or->pipe_nbr + 1;
+  if (count == 1 && is_builtin(and_or->command[0], 0))
+    return (run_parent(and_or, data));
+  pipes_n = count - 1;
+  pipes = NULL;
+  pid = malloc(sizeof(int) * (size_t)count);
+  if (!pid || (pipes_n && !(pipes = malloc(sizeof(*pipes) * (size_t)pipes_n))))
     {
-      while (++i < and_or->pipe_nbr)
-        free(fildes[i]);
-      if (ret == -1)
-	return (free_pid(pid));
-      free(fildes);
+      free(pid);
+      return (-1);
     }
+  i = -1;
+  while (++i < count)
+    pid[i] = 0;
+  i = -1;
+  while (++i < pipes_n)
+    {
+      if (pipe(pipes[i]) == -1)
+	{
+	  close_pipes(pipes, i);
+	  free(pipes);
+	  free(pid);
+	  return (my_int_perror("Error while using pipe function.\n", -1));
+	}
+    }
+  i = -1;
+  while (++i < count)
+    {
+      data->tmp = i;
+      pid[i] = fork();
+      if (pid[i] == -1)
+	{
+	  close_pipes(pipes, pipes_n);
+	  free(pipes);
+	  free(pid);
+	  return (my_int_perror("Error while using fork function.\n", -1));
+	}
+      if (pid[i] == 0)
+	{
+	  signal(SIGINT, SIG_DFL);
+	  signal(SIGQUIT, SIG_DFL);
+	  if (pipes_n)
+	    child_setup(pipes, pipes_n, i);
+	  exit(do_instruction(and_or, i, data));
+	}
+    }
+  close_pipes(pipes, pipes_n);
+  ret = wait_children(pid, count, 0);
+  free(pipes);
   free(pid);
   return (ret);
 }
